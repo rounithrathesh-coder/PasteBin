@@ -1,68 +1,98 @@
 <div align="center">
 
-# 🔗 PasteBin — Modern Developer Workspace
+# 🔗 PasteBin — Enterprise Developer Platform & Code Workspace
 
-A premium, production-grade code snippet management platform built with **React**, **TypeScript**, **Tailwind CSS**, and **Vite**. Designed with the polish and information architecture of tools like GitHub, Supabase, Linear, and VS Code.
+An enterprise-grade Full Stack & DevOps code snippet management platform built with **React 18**, **TypeScript**, **Tailwind CSS**, and **Monaco Editor**. Inspired by the UI polish and developer experience of **GitHub**, **Supabase**, **Linear**, **VS Code**, **Vercel**, and **Datadog**.
 
-![Dashboard Preview](./preview.png)
+![PasteBin Workspace Preview](./preview.png)
 
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-5.3-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Monaco Editor](https://img.shields.io/badge/Monaco_Editor-Integrated-007ACC?style=flat-square&logo=visualstudiocode&logoColor=white)](https://microsoft.github.io/monaco-editor/)
+[![Monaco Editor](https://img.shields.io/badge/Monaco_Editor-VS_Code_Engine-007ACC?style=flat-square&logo=visualstudiocode&logoColor=white)](https://microsoft.github.io/monaco-editor/)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square)](LICENSE)
 
 </div>
 
 ---
 
-## ✨ Overview
+## 🌟 Overview
 
-PasteBin is a full-featured developer workspace for creating, managing, organizing, and sharing code snippets. It features a dark-themed interface with a professional SaaS-grade navigation system, real-time Monaco code editor, and comprehensive snippet management tools.
+**PasteBin** is a modern SaaS developer workspace designed for software engineers, DevOps teams, and technical leaders. It combines code snippet organization, community discovery, API documentation, webhook integrations, system infrastructure monitoring, and account management into a single, cohesive platform.
 
-This is not a basic pastebin clone — it's a **production-quality developer platform** with modular architecture, rich data visualization, and a premium design language.
+Built with strict design standards:
+- 🎨 **Dark Theme Architecture** (`#0B1120`) with vibrant purple accents (`#7C3AED`)
+- 💎 **Glassmorphism UI** with smooth 200ms micro-animations
+- 📐 **Consistent 8px Grid System** with high information density
+- ⚡ **VS Code Monaco Editor Engine** with syntax highlighting for 10+ languages
 
 ---
 
-## 🚀 Features
+## 🚀 Complete Platform Features & Modules
 
-### Core Platform
-- **Dashboard** — Overview with statistics, recent pastes, trending snippets, and quick actions
-- **My Snippets** — Full snippet management with search, filters, sorting, pagination, and bulk actions
-- **Favorites** — Bookmarked snippets for quick access
-- **Monaco Editor** — VS Code-grade integrated code editor with syntax highlighting for 10+ languages
+### 1. 📊 Dashboard
+- Live Developer Overview with real-time statistics cards
+- Quick Create Paste card with inline syntax selector & public/private visibility
+- Recent Pastes data table with instant quick actions (Copy, Share, Download, Edit)
+- Widgets: Quick Actions, Favorite Snippets, and System Status
 
-### Snippet Management
-- **CRUD Operations** — Create, read, update, and delete snippets
-- **Visibility Controls** — Public, Private, and Unlisted snippet modes
-- **Folder Organization** — Organize snippets into named folders
-- **Tagging System** — Tag snippets for easy discovery
-- **Bulk Actions** — Multi-select and bulk delete operations
-- **Code Preview** — Inline 2-line code previews in snippet rows
-- **Download & Share** — One-click code download and share link generation
+### 2. 📁 My Snippets (Library)
+- Complete snippet management with Grid and List display modes
+- Filter by Folders (DSA, Web Dev, Database, Utils, DevOps), Tags, Date, and Visibility
+- ⌘K Global Search bar across titles, descriptions, code, tags, and authors
+- Bulk selection, bulk delete operations, and inline 2-line code previews
 
-### Navigation & Architecture
-- **Dashboard** — Overview and quick actions
-- **My Library** — My Snippets, Favorites, Trash
-- **Discover** — Public Pastes, Trending
-- **Developer** — API Docs & Keys, Integrations, System Health
-- **Settings** — Preferences, Account
+### 3. ⭐ Favorites
+- Dedicated Bookmarked Snippets repository
+- Favorite Snippets sidebar widget for quick workspace navigation
 
-### Design & UX
-- **Dark Theme** — Premium dark interface with purple accent palette
-- **Glassmorphism** — Frosted glass effects and subtle gradients
-- **Responsive Layout** — Three-column adaptive layout
-- **Micro-Animations** — Smooth hover states, transitions, and feedback
-- **Grid & List Views** — Toggle between list and grid display modes
-- **Global Search** — ⌘K powered search across titles, code, tags, and authors
+### 4. 🗑️ Trash
+- Soft-deletion recovery system with 30-day retention countdown
+- Bulk restore and permanent deletion operations with empty trash confirmation modal
+- Widgets: Items in Trash auto-delete countdown & Trash Activity log
 
-### Widgets
-- **Quick Actions** — Create, upload, template, and import shortcuts
-- **Favorite Snippets** — Quick-access favorites widget
-- **System Status** — Live API health, Docker, PostgreSQL, and uptime monitoring
-- **Language Distribution** — Donut chart showing language breakdown
-- **Storage Usage** — Visual storage quota indicator
-- **Recently Opened** — Resume recent work quickly
+### 5. 🌐 Public Pastes (Community)
+- Community discovery hub inspired by Stack Overflow and GitHub Gists
+- Verified Author badges, Star count (⭐), Like count (❤️), and Copy count (📋)
+- Language Filter Chips with counts (`Python 312`, `JavaScript 284`, `HTML 198`, `SQL 156`, `C++ 98`)
+- Widgets: Community Overview (18.7K pastes, 1.2K daily, 542 devs), Popular Languages donut chart, Featured Snippet of the Week, Top Contributors, and Trending Collections
+
+### 6. 🔥 Trending
+- GitHub Trending-inspired discovery engine (Trending Today, This Week, This Month)
+- Gold (#1), Silver (#2), and Bronze (#3) ranking badges
+- Right Sidebar: Developer of the Week, Top Contributors, Trending Languages, and Trending Tags
+
+### 7. 🔑 API Docs & Keys (Developer Portal)
+- Postman & Swagger UI-inspired developer portal
+- Live API Key generation, masked key view, key regeneration, and copy functionality
+- Multi-language Client Code Generator Tabs (`cURL`, `JavaScript`, `Python`, `Node.js`, `Go`)
+- Interactive "Try It Out" API Playground with real-time JSON response viewer
+- Daily API Rate Limit progress bar (`4,820 / 10,000 requests`) & Recent API Activity logs
+
+### 8. 🔌 Integrations & Webhooks
+- External developer tool connectors: GitHub Gists, VS Code Extension, Slack, Discord, Docker Engine, PasteBin CLI, Zapier, and Custom Webhooks
+- Status indicators (`Connected` vs `Not Connected`), OAuth 2.0 configuration, and Webhook secret manager
+- Connection History activity log
+
+### 9. 🛰️ System Health (DevOps Dashboard)
+- Grafana, Railway, and Datadog-inspired infrastructure monitoring
+- Real-time CPU Load (24%), RAM Usage (3.8/8 GB), Disk Storage (2.34 GB), and Network I/O (14ms latency)
+- Running Docker Containers table (`pastebin-api-v1`, `postgres-db-main`, `redis-cache-cluster`, `monaco-worker-pool`)
+- Live Infrastructure logs stream & automated daily backup status
+
+### 10. ⚙️ Preferences
+- Appearance settings (Dark/Light/System theme, Purple/Emerald/Blue/Amber/Rose accent pickers)
+- Monaco Editor settings (Font Size slider, 2/4 Tab Size, Auto Save, Word Wrap, Line Numbers, Minimap)
+- Accessibility & Notification preferences
+- Interactive Keyboard Shortcuts cheatsheet (`⌘K`, `⌘N`, `⌘S`, `⌘/`)
+
+### 11. 👤 Account & Security
+- GitHub Settings-inspired profile manager
+- Profile information editor (Full Name, Username, Verified Email, Bio)
+- Password update form & Two-Factor Authentication (2FA) status
+- Data Management: Export Snippets Archive (ZIP/JSON) & Danger Zone account deletion modal
+- Account Statistics widget (Member since Jan 2024, 28 Snippets, 142 Followers)
 
 ---
 
@@ -70,51 +100,47 @@ This is not a basic pastebin clone — it's a **production-quality developer pla
 
 | Layer | Technology |
 |---|---|
-| **Framework** | React 18 with TypeScript |
-| **Build Tool** | Vite 5.3 |
-| **Styling** | Tailwind CSS 3.4 |
-| **Code Editor** | Monaco Editor (VS Code engine) |
-| **Icons** | Google Material Symbols |
-| **State** | React Context API |
-| **Language** | TypeScript 5.5 |
+| **Frontend Core** | React 18 with TypeScript 5.5 |
+| **Build Tool** | Vite 5.3 (Lightning HMR) |
+| **Styling Engine** | Tailwind CSS 3.4 + Vanilla CSS Tokens |
+| **Code Editor** | Monaco Editor (`@monaco-editor/react`) |
+| **Design System** | Google Material Symbols & Lucide Icons |
+| **State Management** | React Context API |
 
 ---
 
-## 📁 Project Structure
+## 📁 Directory Structure
 
 ```
 src/
-├── App.tsx                     # Main layout & view router
-├── main.tsx                    # Application entry point
-├── index.css                   # Global styles & design tokens
+├── App.tsx                        # Main application layout & view router
+├── main.tsx                       # React DOM entrypoint
+├── index.css                      # Global design system & theme tokens
 ├── context/
-│   └── PasteContext.tsx         # Global state management
+│   └── PasteContext.tsx            # Global state management & storage
 ├── types/
-│   └── paste.ts                # TypeScript type definitions
+│   └── paste.ts                   # TypeScript interfaces & types
 └── components/
-    ├── Navbar.tsx               # Top navigation bar
-    ├── Sidebar.tsx              # Left sidebar navigation
-    ├── FooterStatusBar.tsx      # Bottom status bar
-    ├── QuickCreateCard.tsx      # Quick paste creation form
-    ├── StatsGrid.tsx            # Statistics cards
-    ├── RecentPastesTable.tsx    # Recent pastes data table
-    ├── TrendingPastes.tsx       # Trending pastes grid
-    ├── QuickActionsPanel.tsx    # Quick actions widget
-    ├── SystemStatusPanel.tsx    # System health widget
-    ├── MonacoEditorModal.tsx    # Code editor modal
-    ├── Favorites/
-    │   ├── FavoritesView.tsx    # Favorites page
-    │   └── FavoritesWidget.tsx  # Favorites sidebar widget
-    └── MySnippets/
-        ├── MySnippetsView.tsx   # My Snippets page layout
-        ├── SnippetsTable.tsx    # Snippet list/grid table
-        ├── FilterToolbar.tsx    # Search & filter controls
-        ├── QuickFilterTabs.tsx  # Quick filter pill tabs
-        ├── SnippetOverview.tsx  # Statistics overview widget
-        ├── FoldersWidget.tsx    # Folder management widget
-        ├── LanguageRingWidget.tsx # Language donut chart
-        ├── RecentlyOpenedWidget.tsx # Recently opened widget
-        └── DeleteConfirmModal.tsx  # Delete confirmation dialog
+    ├── Navbar.tsx                  # Top navigation & global search
+    ├── Sidebar.tsx                 # Left navigation sidebar
+    ├── FooterStatusBar.tsx         # Bottom status bar
+    ├── QuickCreateCard.tsx         # Quick paste publisher
+    ├── StatsGrid.tsx               # Analytics statistics cards
+    ├── RecentPastesTable.tsx       # Recent pastes table
+    ├── TrendingPastes.tsx          # Trending snippets grid
+    ├── QuickActionsPanel.tsx       # Quick actions sidebar widget
+    ├── SystemStatusPanel.tsx       # Infrastructure health summary widget
+    ├── MonacoEditorModal.tsx       # Fullscreen Monaco code editor modal
+    ├── Favorites/                  # Favorites view & widgets
+    ├── MySnippets/                 # My Snippets library table & widgets
+    ├── Trash/                      # Soft-deletion recovery & widgets
+    ├── PublicPastes/               # Community discovery & widgets
+    ├── Trending/                   # GitHub Trending-style view & widgets
+    ├── ApiDocs/                    # API keys & interactive playground
+    ├── Integrations/               # Tool connectors & webhooks
+    ├── SystemHealth/               # DevOps Grafana-style monitoring
+    ├── Preferences/                # User preferences & editor settings
+    └── Account/                    # Profile settings & security manager
 ```
 
 ---
@@ -125,64 +151,42 @@ src/
 - **Node.js** ≥ 18.x
 - **npm** ≥ 9.x
 
-### Installation
+### Quick Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/rounithrathesh-coder/pastebin.git
-cd pastebin
+# 1. Clone the repository
+git clone https://github.com/rounithrathesh-coder/PasteBin.git
+cd PasteBin
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start development server
+# 3. Launch local development server
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`.
+The app will be running at `http://localhost:3000`.
 
-### Build for Production
+### Production Build
 
 ```bash
+# Build production bundle
 npm run build
+
+# Preview production build locally
 npm run preview
 ```
 
 ---
 
-## 📸 Screenshots
-
-### Dashboard
-Full overview with statistics, recent pastes, trending snippets, and sidebar widgets.
-
-![Dashboard](./preview.png)
-
----
-
-## 🗺 Roadmap
-
-- [ ] **Trash** — Soft-delete recovery system
-- [ ] **Public Pastes** — Community browse and discover
-- [ ] **Trending** — Popular snippets leaderboard
-- [ ] **API Docs & Keys** — REST API documentation and key management
-- [ ] **Integrations** — GitHub, GitLab, Slack, and webhook support
-- [ ] **System Health** — Full monitoring dashboard
-- [ ] **Preferences** — Theme customization, editor settings
-- [ ] **Account** — Profile management, 2FA, and security
-- [ ] **Authentication** — OAuth login with GitHub and Google
-- [ ] **Backend** — Node.js API with PostgreSQL persistence
-- [ ] **Real-time Collaboration** — Live editing with WebSocket sync
-
----
-
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
 <div align="center">
 
-**Built with ❤️ by [Rounith Arrun Rathesh](https://github.com/rounithrathesh-coder)**
+**Crafted with ❤️ by [Rounith Arrun Rathesh](https://github.com/rounithrathesh-coder)**
 
 </div>
