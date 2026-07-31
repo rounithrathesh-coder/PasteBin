@@ -15,6 +15,12 @@ import { FavoritesView } from './components/Favorites/FavoritesView';
 import { FavoritesWidget } from './components/Favorites/FavoritesWidget';
 import { TrashView } from './components/Trash/TrashView';
 import { PublicPastesView } from './components/PublicPastes/PublicPastesView';
+import { TrendingView } from './components/Trending/TrendingView';
+import { ApiDocsView } from './components/ApiDocs/ApiDocsView';
+import { IntegrationsView } from './components/Integrations/IntegrationsView';
+import { SystemHealthView } from './components/SystemHealth/SystemHealthView';
+import { PreferencesView } from './components/Preferences/PreferencesView';
+import { AccountView } from './components/Account/AccountView';
 
 /* ─── Dashboard ─── */
 const DashboardViewContent: React.FC = () => {
@@ -129,17 +135,17 @@ const MainAppLayout: React.FC = () => {
       case 'public-pastes':
         return <PublicPastesView />;
       case 'trending':
-        return <PlaceholderPage title="Trending" subtitle="Discover the most popular snippets this week." icon="trending_up" />;
+        return <TrendingView />;
       case 'api-docs':
-        return <PlaceholderPage title="API Docs & Keys" subtitle="Manage API keys and explore the PasteBin REST API." icon="api" />;
+        return <ApiDocsView />;
       case 'integrations':
-        return <PlaceholderPage title="Integrations" subtitle="Connect third-party services and configure webhooks." icon="hub" />;
+        return <IntegrationsView />;
       case 'system-health':
-        return <PlaceholderPage title="System Health" subtitle="Monitor server status, Docker containers, PostgreSQL, and uptime." icon="sensors" />;
+        return <SystemHealthView />;
       case 'preferences':
-        return <PlaceholderPage title="Preferences" subtitle="Customize your editor, theme, and notification settings." icon="settings" />;
+        return <PreferencesView />;
       case 'account':
-        return <PlaceholderPage title="Account" subtitle="Manage your profile, security, and authentication." icon="account_circle" />;
+        return <AccountView />;
       default:
         return <DashboardViewContent />;
     }
