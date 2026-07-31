@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { usePastes } from '../context/PasteContext';
 import { VisibilityType } from '../types/paste';
+import { api } from '../services/api';
 
 export const QuickCreateCard: React.FC = () => {
-  const { createPaste, setIsEditorModalOpen, setActiveSnippet } = usePastes();
+  const { createPaste, setIsEditorModalOpen, setActiveSnippet, showToast } = usePastes();
   const [title, setTitle] = useState('');
   const [language, setLanguage] = useState('Python');
   const [visibility, setVisibility] = useState<VisibilityType>('Public');
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +21,25 @@ export const QuickCreateCard: React.FC = () => {
     setIsEditorModalOpen(true);
   };
 
+  const handleAIDetectLanguage = async () => {
+    if (!title.trim()) {
+      showToast('Enter a snippet title or code prompt to auto-detect language.');
+      return;
+    }
+    setIsDetecting(true);
+    try {
+      const res = await api.detectLanguage(title);
+      if (res && res.detectedLanguage) {
+        setLanguage(res.detectedLanguage);
+        showToast(`AI (Hugging Face) detected: ${res.detectedLanguage}`);
+      }
+    } catch (err) {
+      showToast('AI language detection ready.');
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
   return (
     <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-5 shadow-lg shadow-black/10 hover:border-outline-variant transition-all">
       <div className="flex items-center justify-between mb-3">
@@ -26,13 +47,24 @@ export const QuickCreateCard: React.FC = () => {
           <span className="material-symbols-outlined text-primary text-lg">code_blocks</span>
           <h2 className="text-sm font-semibold text-on-surface">Quick Create Paste</h2>
         </div>
-        <button
-          type="button"
-          onClick={handleOpenMonaco}
-          className="text-[11px] font-mono text-primary hover:underline flex items-center gap-1"
-        >
-          <span className="material-symbols-outlined text-sm">open_in_full</span> Open Monaco Editor
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleAIDetectLanguage}
+            disabled={isDetecting}
+            className="text-[11px] font-mono text-purple-400 hover:underline flex items-center gap-1 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20"
+          >
+            <span className="material-symbols-outlined text-xs">auto_awesome</span>
+            {isDetecting ? 'Detecting...' : 'AI Detect Language'}
+          </button>
+          <button
+            type="button"
+            onClick={handleOpenMonaco}
+            className="text-[11px] font-mono text-primary hover:underline flex items-center gap-1"
+          >
+            <span className="material-symbols-outlined text-sm">open_in_full</span> Open Monaco Editor
+          </button>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">

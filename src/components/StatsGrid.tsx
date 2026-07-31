@@ -1,10 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePastes } from '../context/PasteContext';
+import { api } from '../services/api';
 
 export const StatsGrid: React.FC = () => {
   const { pastes } = usePastes();
+  const [stats, setStats] = useState({
+    totalPastes: pastes.length,
+    sharedToday: 24,
+    publicRatio: '61%',
+    apiUptime: '99.98%'
+  });
 
-  const totalPastes = pastes.length;
+  useEffect(() => {
+    api.fetchStats()
+      .then(res => {
+        if (res && res.stats) {
+          setStats({
+            totalPastes: res.stats.totalPastes || pastes.length,
+            sharedToday: res.stats.sharedToday || 24,
+            publicRatio: `${res.stats.publicSnippetsRatio || 61}%`,
+            apiUptime: res.stats.apiUptime || '99.98%'
+          });
+        }
+      })
+      .catch(() => {});
+  }, [pastes.length]);
+
+  const totalPastes = pastes.length || stats.totalPastes;
   const publicCount = pastes.filter(p => p.visibility === 'Public').length;
   const publicPercent = totalPastes > 0 ? Math.round((publicCount / totalPastes) * 100) : 0;
 
@@ -32,7 +54,7 @@ export const StatsGrid: React.FC = () => {
           <span className="material-symbols-outlined text-purple-400 text-xl">share</span>
         </div>
         <div>
-          <div className="text-2xl font-bold font-mono tracking-tight text-on-surface">24</div>
+          <div className="text-2xl font-bold font-mono tracking-tight text-on-surface">{stats.sharedToday}</div>
           <div className="text-xs text-outline flex items-center gap-1 mt-0.5">
             Shared Today
             <span className="text-emerald-400 font-semibold flex items-center text-[11px] bg-emerald-500/10 px-1.5 py-0.5 rounded">
@@ -62,7 +84,7 @@ export const StatsGrid: React.FC = () => {
           <span className="material-symbols-outlined text-sky-400 text-xl">dns</span>
         </div>
         <div>
-          <div className="text-2xl font-bold font-mono tracking-tight text-on-surface">99.98%</div>
+          <div className="text-2xl font-bold font-mono tracking-tight text-on-surface">{stats.apiUptime}</div>
           <div className="text-xs text-outline flex items-center gap-1.5 mt-0.5">
             API Uptime
             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">

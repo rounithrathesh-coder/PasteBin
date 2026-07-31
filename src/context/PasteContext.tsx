@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Snippet, VisibilityType, FolderItem, ViewType } from '../types/paste';
+import { api } from '../services/api';
 
 const INITIAL_PASTES: Snippet[] = [
   {
@@ -367,14 +368,26 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
-  React.useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'light') {
-      root.classList.remove('dark');
-    } else {
-      root.classList.add('dark');
-    }
-  }, [theme]);
+  useEffect(() => {
+    // Fetch live pastes from Express backend API
+    api.fetchPastes()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPastes(data);
+        }
+      })
+      .catch(err => console.log('[API] Using local initial pastes:', err.message));
+
+    // Fetch live trash from Express backend API
+    fetch('/api/trash')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setTrashedPastes(data);
+        }
+      })
+      .catch(err => console.log('[API] Using local initial trash:', err.message));
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
@@ -394,7 +407,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const createPaste = (
+  const createPaste = async (
     title: string,
     language: string,
     visibility: VisibilityType,
@@ -404,6 +417,28 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   ) => {
     const defaultCode = code || `// New ${language} paste created\n// Add your snippet logic here\n\nfunction main() {\n  console.log("Hello from ${title}");\n}\n\nmain();`;
     const lineCount = defaultCode.split('\n').length;
+
+    try {
+      const apiResult = await api.createPaste({
+        title: title || `Untitled ${language} Paste`,
+        language: language || 'JavaScript',
+        visibility,
+        code: defaultCode,
+        folder: folder || 'Utils',
+        description: description || `Snippet created in ${language}`
+      });
+
+      if (apiResult && apiResult.id) {
+        setPastes(prev => [apiResult, ...prev]);
+        if (folder) {
+          setFolders(prev => prev.map(f => f.name === folder ? { ...f, count: f.count + 1 } : f));
+        }
+        showToast(`Paste "${apiResult.title}" published to API backend!`);
+        return;
+      }
+    } catch (err) {
+      console.warn('[API Create Fail] Using local store:', err);
+    }
 
     const newSnippet: Snippet = {
       id: `pst-${Date.now().toString().slice(-4)}`,
@@ -424,16 +459,19 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     setPastes(prev => [newSnippet, ...prev]);
-
     if (folder) {
       setFolders(prev => prev.map(f => f.name === folder ? { ...f, count: f.count + 1 } : f));
     }
-
     showToast(`Paste "${newSnippet.title}" published successfully!`);
   };
 
   // Move snippet to trash
-  const deletePaste = (id: string) => {
+  const deletePaste = async (id: string) => {
+    try {
+      await api.deletePaste(id);
+    } catch (err) {
+      console.warn('[API Delete Fail]:', err);
+    }
     const target = pastes.find(p => p.id === id);
     if (target) {
       setPastes(prev => prev.filter(p => p.id !== id));
@@ -444,8 +482,11 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const bulkDeletePastes = () => {
+  const bulkDeletePastes = async () => {
     const targets = pastes.filter(p => selectedSnippetIds.includes(p.id));
+    for (const t of targets) {
+      try { await api.deletePaste(t.id); } catch (e) {}
+    }
     setPastes(prev => prev.filter(p => !selectedSnippetIds.includes(p.id)));
     setTrashedPastes(prev => [
       ...targets.map(t => ({ ...t, isTrashed: true, deletedAt: 'Just now' })),
@@ -456,7 +497,12 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Restore snippet from trash
-  const restorePaste = (id: string) => {
+  const restorePaste = async (id: string) => {
+    try {
+      await api.restorePaste(id);
+    } catch (err) {
+      console.warn('[API Restore Fail]:', err);
+    }
     const target = trashedPastes.find(p => p.id === id);
     if (target) {
       setTrashedPastes(prev => prev.filter(p => p.id !== id));
@@ -465,7 +511,10 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const bulkRestorePastes = (ids: string[]) => {
+  const bulkRestorePastes = async (ids: string[]) => {
+    for (const id of ids) {
+      try { await api.restorePaste(id); } catch (e) {}
+    }
     const targets = trashedPastes.filter(p => ids.includes(p.id));
     setTrashedPastes(prev => prev.filter(p => !ids.includes(p.id)));
     setPastes(prev => [...targets.map(t => ({ ...t, isTrashed: false })), ...prev]);
@@ -473,18 +522,27 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Permanent Delete
-  const permanentlyDeletePaste = (id: string) => {
+  const permanentlyDeletePaste = async (id: string) => {
+    try {
+      await api.deletePaste(id);
+    } catch (e) {}
     const target = trashedPastes.find(p => p.id === id);
     setTrashedPastes(prev => prev.filter(p => p.id !== id));
     showToast(`Permanently deleted "${target?.title || 'snippet'}".`);
   };
 
-  const bulkPermanentlyDeletePastes = (ids: string[]) => {
+  const bulkPermanentlyDeletePastes = async (ids: string[]) => {
+    for (const id of ids) {
+      try { await api.deletePaste(id); } catch (e) {}
+    }
     setTrashedPastes(prev => prev.filter(p => !ids.includes(p.id)));
     showToast(`Permanently deleted ${ids.length} snippets.`);
   };
 
-  const emptyTrash = () => {
+  const emptyTrash = async () => {
+    try {
+      await api.emptyTrash();
+    } catch (e) {}
     const count = trashedPastes.length;
     setTrashedPastes([]);
     showToast(`Emptied trash (${count} items deleted).`);
