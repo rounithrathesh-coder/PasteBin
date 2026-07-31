@@ -20,6 +20,11 @@ export interface Snippet {
   isPinned?: boolean;
   isTrashed?: boolean;
   deletedAt?: string;
+  likes?: number;
+  stars?: number;
+  copies?: number;
+  isVerifiedAuthor?: boolean;
+  authorAvatar?: string;
 }
 
 export interface FolderItem {

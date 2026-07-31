@@ -14,6 +14,7 @@ import { MySnippetsView } from './components/MySnippets/MySnippetsView';
 import { FavoritesView } from './components/Favorites/FavoritesView';
 import { FavoritesWidget } from './components/Favorites/FavoritesWidget';
 import { TrashView } from './components/Trash/TrashView';
+import { PublicPastesView } from './components/PublicPastes/PublicPastesView';
 
 /* ─── Dashboard ─── */
 const DashboardViewContent: React.FC = () => {
@@ -126,7 +127,7 @@ const MainAppLayout: React.FC = () => {
       case 'trash':
         return <TrashView />;
       case 'public-pastes':
-        return <PlaceholderPage title="Public Pastes" subtitle="Browse publicly shared code snippets from the community." icon="public" />;
+        return <PublicPastesView />;
       case 'trending':
         return <PlaceholderPage title="Trending" subtitle="Discover the most popular snippets this week." icon="trending_up" />;
       case 'api-docs':

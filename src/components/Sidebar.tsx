@@ -98,24 +98,26 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Storage Widget */}
-      <div className="mt-auto p-4 border-t border-outline-variant/60 space-y-3">
-        <div className="bg-surface-container/60 p-3.5 rounded-xl border border-outline-variant/50 space-y-2">
-          <div className="flex justify-between items-center text-xs font-semibold text-on-surface">
-            <span className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-sm text-primary">cloud</span> Storage Usage
-            </span>
-            <span className="text-[10px] font-mono text-outline">23%</span>
+      {/* Storage Widget (Hidden on Public Pastes view) */}
+      {activeView !== 'public-pastes' && (
+        <div className="mt-auto p-4 border-t border-outline-variant/60 space-y-3">
+          <div className="bg-surface-container/60 p-3.5 rounded-xl border border-outline-variant/50 space-y-2">
+            <div className="flex justify-between items-center text-xs font-semibold text-on-surface">
+              <span className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm text-primary">cloud</span> Storage Usage
+              </span>
+              <span className="text-[10px] font-mono text-outline">23%</span>
+            </div>
+            <div className="text-[11px] font-mono text-outline">2.34 GB / 10 GB (23%)</div>
+            <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+              <div className="bg-primary h-full w-[23%] rounded-full"></div>
+            </div>
           </div>
-          <div className="text-[11px] font-mono text-outline">2.34 GB / 10 GB (23%)</div>
-          <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-            <div className="bg-primary h-full w-[23%] rounded-full"></div>
-          </div>
+          <button className="w-full py-2 px-3 bg-primary/10 text-primary border border-primary/20 rounded-lg text-xs font-semibold hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5">
+            <span className="material-symbols-outlined text-sm">workspace_premium</span> Upgrade Storage
+          </button>
         </div>
-        <button className="w-full py-2 px-3 bg-primary/10 text-primary border border-primary/20 rounded-lg text-xs font-semibold hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5">
-          <span className="material-symbols-outlined text-sm">workspace_premium</span> Upgrade Storage
-        </button>
-      </div>
+      )}
     </aside>
   );
 };
