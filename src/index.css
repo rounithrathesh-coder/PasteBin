@@ -2,76 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Light & Dark Theme CSS Variable Tokens ─── */
+/* ─── Modern Dual Theme (CSS Variable Design System) ─── */
 
-:root {
+:root, html.dark {
   color-scheme: dark;
+  --color-surface: #0d1322;
+  --color-surface-dim: #0d1322;
+  --color-surface-container-lowest: #080e1d;
+  --color-surface-container-low: #151b2b;
+  --color-surface-container: #191f2f;
+  --color-surface-container-high: #242a3a;
+  --color-surface-container-highest: #2f3445;
+  --color-surface-variant: #2f3445;
+
+  --color-on-surface: #dde2f8;
+  --color-on-surface-variant: #c3c7db;
+  --color-outline: #958da1;
+  --color-outline-variant: #4a4455;
+
+  --color-primary: #d2bbff;
+  --color-primary-container: #7c3aed;
+  --color-on-primary-container: #ede0ff;
+
+  --color-secondary-container: #6f00be;
+  --color-on-secondary-container: #d6a9ff;
+
+  --border-color: rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
 }
 
 html.light {
   color-scheme: light;
-}
+  --color-surface: #f8fafc;
+  --color-surface-dim: #f1f5f9;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #ffffff;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-high: #e2e8f0;
+  --color-surface-container-highest: #cbd5e1;
+  --color-surface-variant: #e2e8f0;
 
-/* Light Theme Overrides */
-html.light body {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
-}
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #334155;
+  --color-outline: #64748b;
+  --color-outline-variant: #cbd5e1;
 
-html.light .bg-surface {
-  background-color: #f8fafc !important;
-}
+  --color-primary: #7c3aed;
+  --color-primary-container: #7c3aed;
+  --color-on-primary-container: #ffffff;
 
-html.light .bg-surface-container-low,
-html.light .bg-surface-container-lowest {
-  background-color: #ffffff !important;
-}
+  --color-secondary-container: #f3e8ff;
+  --color-on-secondary-container: #6b21a8;
 
-html.light .bg-surface-container-high,
-html.light .bg-surface-container {
-  background-color: #f1f5f9 !important;
-}
-
-html.light .text-on-surface {
-  color: #0f172a !important;
-}
-
-html.light .text-on-surface-variant {
-  color: #334155 !important;
-}
-
-html.light .text-outline {
-  color: #64748b !important;
-}
-
-html.light .border-outline-variant\/60,
-html.light .border-outline-variant\/50,
-html.light .border-outline-variant\/40,
-html.light .border-outline-variant\/30,
-html.light .border-outline-variant {
-  border-color: #e2e8f0 !important;
-}
-
-html.light .shadow-sm,
-html.light .shadow-md,
-html.light .shadow-xl,
-html.light .shadow-2xl {
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03) !important;
-}
-
-/* Dark Theme Overrides */
-html.dark body {
-  background-color: #0d1322 !important;
-  color: #dde2f8 !important;
+  --border-color: #e2e8f0;
+  --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
 }
 
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 }
 
+/* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -80,18 +76,15 @@ html.dark body {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #2f3445;
+  background: var(--color-outline-variant);
   border-radius: 10px;
-}
-
-html.light .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
 }
 
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+/* Sidebar Active Link Styling */
 .active-nav {
   background: linear-gradient(90deg, rgba(124, 58, 237, 0.15) 0%, transparent 100%);
   border-left: 3px solid #7c3aed;
@@ -99,7 +92,7 @@ html.light .custom-scrollbar::-webkit-scrollbar-thumb {
 }
 
 html.dark .active-nav {
-  background: linear-gradient(90deg, rgba(124, 58, 237, 0.2) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.25) 0%, transparent 100%);
   border-left: 3px solid #d2bbff;
   color: #d2bbff;
 }
