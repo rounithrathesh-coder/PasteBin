@@ -1,8 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { usePastes } from '../context/PasteContext';
 
 export const Navbar: React.FC = () => {
-  const { searchQuery, setSearchQuery, setIsEditorModalOpen, setActiveSnippet, setIsAuthModalOpen, setActiveView } = usePastes();
+  const {
+    searchQuery,
+    setSearchQuery,
+    setIsEditorModalOpen,
+    setActiveSnippet,
+    setIsAuthModalOpen,
+    setActiveView,
+    isAuthenticated,
+    logout
+  } = usePastes();
+
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -12,8 +24,19 @@ export const Navbar: React.FC = () => {
         if (searchInput) searchInput.focus();
       }
     };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleOpenNewEditor = () => {
@@ -24,7 +47,10 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="h-14 border-b border-outline-variant/60 flex items-center justify-between px-5 z-50 bg-surface shrink-0">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 cursor-pointer shrink-0">
+      <div
+        onClick={() => setActiveView('dashboard')}
+        className="flex items-center gap-2.5 cursor-pointer shrink-0"
+      >
         <div className="bg-primary-container p-1.5 rounded-lg shadow-sm shadow-primary-container/40">
           <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
             terminal
@@ -87,25 +113,112 @@ export const Navbar: React.FC = () => {
           </span>
         </div>
 
-        {/* Sign In & User Profile */}
-        <button
-          onClick={() => setIsAuthModalOpen(true)}
-          className="px-3 py-1.5 rounded-lg border border-outline-variant/60 bg-surface-container-high/60 text-xs font-mono font-semibold text-on-surface hover:border-outline hover:bg-surface-container-high transition-all flex items-center gap-1.5"
-        >
-          <span className="material-symbols-outlined text-base">login</span>
-          Sign In
-        </button>
+        {/* Authentication State Controls */}
+        {!isAuthenticated ? (
+          /* Logged-Out State: Show Sign In Button */
+          <button
+            onClick={() => setIsAuthModalOpen(true)}
+            className="px-3.5 py-1.5 rounded-lg border border-primary/40 bg-primary/10 text-xs font-mono font-semibold text-primary hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center gap-1.5 shadow-sm"
+          >
+            <span className="material-symbols-outlined text-base">login</span>
+            Sign In
+          </button>
+        ) : (
+          /* Logged-In State: Show User Profile Avatar & Dropdown */
+          <div className="relative ml-1" ref={profileMenuRef}>
+            <div
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              className="flex items-center gap-1.5 cursor-pointer group p-1 rounded-lg hover:bg-surface-variant/40 transition-colors"
+              title="Account Options"
+            >
+              <div className="w-8 h-8 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs ring-2 ring-primary/30 shadow-sm">
+                RA
+              </div>
+              <span className="material-symbols-outlined text-outline group-hover:text-on-surface text-base">
+                {isProfileMenuOpen ? 'expand_less' : 'expand_more'}
+              </span>
+            </div>
 
-        <div
-          onClick={() => setActiveView('account')}
-          className="flex items-center gap-2 ml-1 cursor-pointer group p-1 rounded-lg hover:bg-surface-variant/40 transition-colors"
-          title="Account Settings"
-        >
-          <div className="w-8 h-8 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs ring-1 ring-primary/20">
-            RA
+            {/* Profile Dropdown Menu */}
+            {isProfileMenuOpen && (
+              <div className="absolute right-0 top-11 w-64 bg-surface-container-low border border-outline-variant/60 rounded-xl shadow-2xl p-2.5 z-50 animate-fade-in font-mono space-y-2">
+                {/* User Header */}
+                <div className="p-2 border-b border-outline-variant/40 space-y-0.5">
+                  <div className="text-xs font-bold text-on-surface flex items-center gap-1">
+                    Rounith Arrun Rathesh
+                    <span className="material-symbols-outlined text-blue-400 text-xs">verified</span>
+                  </div>
+                  <div className="text-[10px] text-outline">@rounithrathesh</div>
+                  <div className="text-[10px] text-emerald-400 flex items-center gap-1 pt-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Pro Account • Active Session</span>
+                  </div>
+                </div>
+
+                {/* Dropdown Navigation Links */}
+                <div className="space-y-0.5 text-xs text-on-surface">
+                  <button
+                    onClick={() => {
+                      setActiveView('account');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    className="w-full text-left p-2 rounded-lg hover:bg-surface-container-high flex items-center gap-2 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base text-primary">account_circle</span>
+                    <span>Account &amp; Security</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveView('my-snippets');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    className="w-full text-left p-2 rounded-lg hover:bg-surface-container-high flex items-center gap-2 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base text-purple-400">code</span>
+                    <span>My Snippets (28)</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveView('api-docs');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    className="w-full text-left p-2 rounded-lg hover:bg-surface-container-high flex items-center gap-2 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base text-emerald-400">api</span>
+                    <span>API Docs &amp; Keys</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveView('preferences');
+                      setIsProfileMenuOpen(false);
+                    }}
+                    className="w-full text-left p-2 rounded-lg hover:bg-surface-container-high flex items-center gap-2 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-base text-amber-400">settings</span>
+                    <span>Preferences</span>
+                  </button>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-outline-variant/40 pt-1">
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsProfileMenuOpen(false);
+                    }}
+                    className="w-full text-left p-2 rounded-lg hover:bg-red-500/10 text-red-400 flex items-center gap-2 transition-colors font-semibold"
+                  >
+                    <span className="material-symbols-outlined text-base">logout</span>
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-          <span className="material-symbols-outlined text-outline group-hover:text-on-surface text-base">expand_more</span>
-        </div>
+        )}
       </div>
     </nav>
   );

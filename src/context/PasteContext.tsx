@@ -329,6 +329,9 @@ interface PasteContextType {
   setIsEditorModalOpen: (open: boolean) => void;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
+  isAuthenticated: boolean;
+  setIsAuthenticated: (auth: boolean) => void;
+  logout: () => void;
   deleteModalSnippet: Snippet | null;
   setDeleteModalSnippet: (s: Snippet | null) => void;
   toastMessage: string | null;
@@ -361,6 +364,12 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [activeSnippet, setActiveSnippet] = useState<Snippet | null>(null);
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    showToast('Logged out successfully');
+  };
   const [deleteModalSnippet, setDeleteModalSnippet] = useState<Snippet | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -506,6 +515,9 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setIsEditorModalOpen,
         isAuthModalOpen,
         setIsAuthModalOpen,
+        isAuthenticated,
+        setIsAuthenticated,
+        logout,
         deleteModalSnippet,
         setDeleteModalSnippet,
         toastMessage,

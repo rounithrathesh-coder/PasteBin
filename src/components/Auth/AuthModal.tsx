@@ -8,7 +8,7 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
-  const { showToast } = usePastes();
+  const { showToast, setIsAuthenticated } = usePastes();
 
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
@@ -44,6 +44,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
       setTimeout(() => {
         setIsLoading(false);
+        setIsAuthenticated(true);
         if (mode === 'login') {
           showToast(`Welcome back, ${email.split('@')[0]}!`);
         } else {
@@ -61,6 +62,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
+      setIsAuthenticated(true);
       showToast(`Authenticated via ${provider}!`);
       onClose();
     }, 500);
