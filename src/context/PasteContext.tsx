@@ -171,7 +171,7 @@ const INITIAL_PASTES: Snippet[] = [
   }
 ];
 
-// Add dummy records to reach 28 total snippets
+// Add dummy records to reach 28 total active snippets
 for (let i = 11; i <= 28; i++) {
   const languages = ['Python', 'JavaScript', 'HTML', 'SQL', 'C++', 'Bash'];
   const visibilities: VisibilityType[] = ['Public', 'Private', 'Unlisted', 'Public'];
@@ -198,6 +198,105 @@ for (let i = 11; i <= 28; i++) {
   });
 }
 
+// Initial Trash Data (18 items to match mockup exactly)
+const INITIAL_TRASH: Snippet[] = [
+  {
+    id: 'tr-01',
+    title: 'Quick sort in Python',
+    description: 'Implementation of quick sort algorithm with comments',
+    code: `def quick_sort(arr):\n    if len(arr) <= 1: return arr\n    pivot = arr[len(arr) // 2]\n    return quick_sort([x for x in arr if x < pivot]) + [x for x in arr if x == pivot] + quick_sort([x for x in arr if x > pivot])`,
+    language: 'Python',
+    visibility: 'Public',
+    views: 128,
+    lines: 28,
+    fileSize: '1.2 KB',
+    author: 'coder_07',
+    createdAt: '2 hours ago',
+    deletedAt: '2 hours ago',
+    isTrashed: true
+  },
+  {
+    id: 'tr-02',
+    title: 'Responsive Navbar HTML CSS',
+    description: 'Modern responsive navbar with hamburger menu',
+    code: `<nav className="flex justify-between items-center px-6 py-4 bg-slate-900 text-white">\n  <div className="font-bold text-xl">AppLogo</div>\n</nav>`,
+    language: 'HTML',
+    visibility: 'Public',
+    views: 96,
+    lines: 42,
+    fileSize: '2.4 KB',
+    author: 'ui_developer',
+    createdAt: '5 hours ago',
+    deletedAt: '5 hours ago',
+    isTrashed: true
+  },
+  {
+    id: 'tr-03',
+    title: 'JWT Authentication Middleware',
+    description: 'Express JS middleware for verifying Bearer JWT tokens',
+    code: `const jwt = require("jsonwebtoken");\nmodule.exports = (req, res, next) => { ... }`,
+    language: 'JavaScript',
+    visibility: 'Public',
+    views: 78,
+    lines: 36,
+    fileSize: '3.1 KB',
+    author: 'backend_dev',
+    createdAt: '1 day ago',
+    deletedAt: '1 day ago',
+    isTrashed: true
+  },
+  {
+    id: 'tr-04',
+    title: 'Docker Compose for Postgres',
+    description: 'Production-ready docker compose setup for postgres database',
+    code: `version: "3.8"\nservices:\n  db:\n    image: postgres:15-alpine`,
+    language: 'Bash',
+    visibility: 'Public',
+    views: 64,
+    lines: 24,
+    fileSize: '1.8 KB',
+    author: 'devops_lead',
+    createdAt: '2 days ago',
+    deletedAt: '2 days ago',
+    isTrashed: true
+  },
+  {
+    id: 'tr-05',
+    title: 'SQL Join Examples',
+    description: 'Common SQL join queries with practical examples',
+    code: `SELECT u.id, u.name, o.total_amount FROM users u INNER JOIN orders o ON u.id = o.user_id`,
+    language: 'SQL',
+    visibility: 'Private',
+    views: 53,
+    lines: 31,
+    fileSize: '1.6 KB',
+    author: 'data_guy',
+    createdAt: '3 days ago',
+    deletedAt: '3 days ago',
+    isTrashed: true
+  }
+];
+
+for (let i = 6; i <= 18; i++) {
+  const languages = ['Python', 'JavaScript', 'HTML', 'Bash', 'SQL', 'C++'];
+  const lang = languages[i % languages.length];
+  INITIAL_TRASH.push({
+    id: `tr-${i}`,
+    title: `Deprecated ${lang} Snippet #${i}`,
+    description: `Archived boilerplate utility script for ${lang}`,
+    code: `// Archived code snippet #${i}\nconsole.log("Archived ${lang} snippet");`,
+    language: lang,
+    visibility: 'Public',
+    views: 10 + i * 2,
+    lines: 12 + i,
+    fileSize: `${(0.9 + (i % 4) * 0.4).toFixed(1)} KB`,
+    author: `dev_user_${i}`,
+    createdAt: `${i} days ago`,
+    deletedAt: `${i} days ago`,
+    isTrashed: true
+  });
+}
+
 const INITIAL_FOLDERS: FolderItem[] = [
   { id: 'f-1', name: 'DSA', color: 'amber', count: 8 },
   { id: 'f-2', name: 'Web Development', color: 'orange', count: 7 },
@@ -210,6 +309,7 @@ interface PasteContextType {
   activeView: ViewType;
   setActiveView: (view: ViewType) => void;
   pastes: Snippet[];
+  trashedPastes: Snippet[];
   folders: FolderItem[];
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -234,6 +334,11 @@ interface PasteContextType {
   createPaste: (title: string, language: string, visibility: VisibilityType, code?: string, folder?: string, description?: string) => void;
   deletePaste: (id: string) => void;
   bulkDeletePastes: () => void;
+  restorePaste: (id: string) => void;
+  permanentlyDeletePaste: (id: string) => void;
+  emptyTrash: () => void;
+  bulkRestorePastes: (ids: string[]) => void;
+  bulkPermanentlyDeletePastes: (ids: string[]) => void;
   toggleFavorite: (id: string) => void;
   addFolder: (name: string, color?: string) => void;
 }
@@ -243,6 +348,7 @@ const PasteContext = createContext<PasteContextType | undefined>(undefined);
 export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
   const [pastes, setPastes] = useState<Snippet[]>(INITIAL_PASTES);
+  const [trashedPastes, setTrashedPastes] = useState<Snippet[]>(INITIAL_TRASH);
   const [folders, setFolders] = useState<FolderItem[]>(INITIAL_FOLDERS);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
@@ -291,7 +397,6 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     setPastes(prev => [newSnippet, ...prev]);
 
-    // Update folder counts
     if (folder) {
       setFolders(prev => prev.map(f => f.name === folder ? { ...f, count: f.count + 1 } : f));
     }
@@ -299,19 +404,62 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     showToast(`Paste "${newSnippet.title}" published successfully!`);
   };
 
+  // Move snippet to trash
   const deletePaste = (id: string) => {
     const target = pastes.find(p => p.id === id);
-    setPastes(prev => prev.filter(p => p.id !== id));
-    setSelectedSnippetIds(prev => prev.filter(i => i !== id));
-    setDeleteModalSnippet(null);
-    showToast(`Snippet "${target?.title || 'item'}" deleted.`);
+    if (target) {
+      setPastes(prev => prev.filter(p => p.id !== id));
+      setTrashedPastes(prev => [{ ...target, isTrashed: true, deletedAt: 'Just now' }, ...prev]);
+      setSelectedSnippetIds(prev => prev.filter(i => i !== id));
+      setDeleteModalSnippet(null);
+      showToast(`Snippet "${target.title}" moved to Trash.`);
+    }
   };
 
   const bulkDeletePastes = () => {
-    const count = selectedSnippetIds.length;
+    const targets = pastes.filter(p => selectedSnippetIds.includes(p.id));
     setPastes(prev => prev.filter(p => !selectedSnippetIds.includes(p.id)));
+    setTrashedPastes(prev => [
+      ...targets.map(t => ({ ...t, isTrashed: true, deletedAt: 'Just now' })),
+      ...prev
+    ]);
     setSelectedSnippetIds([]);
-    showToast(`Deleted ${count} selected snippets.`);
+    showToast(`Moved ${targets.length} snippets to Trash.`);
+  };
+
+  // Restore snippet from trash
+  const restorePaste = (id: string) => {
+    const target = trashedPastes.find(p => p.id === id);
+    if (target) {
+      setTrashedPastes(prev => prev.filter(p => p.id !== id));
+      setPastes(prev => [{ ...target, isTrashed: false }, ...prev]);
+      showToast(`Restored "${target.title}" to My Snippets.`);
+    }
+  };
+
+  const bulkRestorePastes = (ids: string[]) => {
+    const targets = trashedPastes.filter(p => ids.includes(p.id));
+    setTrashedPastes(prev => prev.filter(p => !ids.includes(p.id)));
+    setPastes(prev => [...targets.map(t => ({ ...t, isTrashed: false })), ...prev]);
+    showToast(`Restored ${targets.length} snippets.`);
+  };
+
+  // Permanent Delete
+  const permanentlyDeletePaste = (id: string) => {
+    const target = trashedPastes.find(p => p.id === id);
+    setTrashedPastes(prev => prev.filter(p => p.id !== id));
+    showToast(`Permanently deleted "${target?.title || 'snippet'}".`);
+  };
+
+  const bulkPermanentlyDeletePastes = (ids: string[]) => {
+    setTrashedPastes(prev => prev.filter(p => !ids.includes(p.id)));
+    showToast(`Permanently deleted ${ids.length} snippets.`);
+  };
+
+  const emptyTrash = () => {
+    const count = trashedPastes.length;
+    setTrashedPastes([]);
+    showToast(`Emptied trash (${count} items deleted).`);
   };
 
   const toggleFavorite = (id: string) => {
@@ -335,6 +483,7 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         activeView,
         setActiveView,
         pastes,
+        trashedPastes,
         folders,
         searchQuery,
         setSearchQuery,
@@ -359,6 +508,11 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         createPaste,
         deletePaste,
         bulkDeletePastes,
+        restorePaste,
+        permanentlyDeletePaste,
+        emptyTrash,
+        bulkRestorePastes,
+        bulkPermanentlyDeletePastes,
         toggleFavorite,
         addFolder
       }}

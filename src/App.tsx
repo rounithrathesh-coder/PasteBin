@@ -13,6 +13,7 @@ import { MonacoEditorModal } from './components/MonacoEditorModal';
 import { MySnippetsView } from './components/MySnippets/MySnippetsView';
 import { FavoritesView } from './components/Favorites/FavoritesView';
 import { FavoritesWidget } from './components/Favorites/FavoritesWidget';
+import { TrashView } from './components/Trash/TrashView';
 
 /* ─── Dashboard ─── */
 const DashboardViewContent: React.FC = () => {
@@ -123,7 +124,7 @@ const MainAppLayout: React.FC = () => {
       case 'favorites':
         return <FavoritesView />;
       case 'trash':
-        return <PlaceholderPage title="Trash" subtitle="Recover or permanently delete removed snippets." icon="delete" />;
+        return <TrashView />;
       case 'public-pastes':
         return <PlaceholderPage title="Public Pastes" subtitle="Browse publicly shared code snippets from the community." icon="public" />;
       case 'trending':

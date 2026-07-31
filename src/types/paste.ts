@@ -18,6 +18,8 @@ export interface Snippet {
   tags?: string[];
   isFavorite?: boolean;
   isPinned?: boolean;
+  isTrashed?: boolean;
+  deletedAt?: string;
 }
 
 export interface FolderItem {
