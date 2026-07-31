@@ -2,72 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Modern Dual Theme (CSS Variable Design System) ─── */
-
-:root, html.dark {
-  color-scheme: dark;
-  --color-surface: #0d1322;
-  --color-surface-dim: #0d1322;
-  --color-surface-container-lowest: #080e1d;
-  --color-surface-container-low: #151b2b;
-  --color-surface-container: #191f2f;
-  --color-surface-container-high: #242a3a;
-  --color-surface-container-highest: #2f3445;
-  --color-surface-variant: #2f3445;
-
-  --color-on-surface: #dde2f8;
-  --color-on-surface-variant: #c3c7db;
-  --color-outline: #958da1;
-  --color-outline-variant: #4a4455;
-
-  --color-primary: #d2bbff;
-  --color-primary-container: #7c3aed;
-  --color-on-primary-container: #ede0ff;
-
-  --color-secondary-container: #6f00be;
-  --color-on-secondary-container: #d6a9ff;
-
-  --border-color: rgba(255, 255, 255, 0.1);
-  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
-}
-
-html.light {
-  color-scheme: light;
-  --color-surface: #f8fafc;
-  --color-surface-dim: #f1f5f9;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #ffffff;
-  --color-surface-container: #f1f5f9;
-  --color-surface-container-high: #e2e8f0;
-  --color-surface-container-highest: #cbd5e1;
-  --color-surface-variant: #e2e8f0;
-
-  --color-on-surface: #0f172a;
-  --color-on-surface-variant: #334155;
-  --color-outline: #64748b;
-  --color-outline-variant: #cbd5e1;
-
-  --color-primary: #7c3aed;
-  --color-primary-container: #7c3aed;
-  --color-on-primary-container: #ffffff;
-
-  --color-secondary-container: #f3e8ff;
-  --color-on-secondary-container: #6b21a8;
-
-  --border-color: #e2e8f0;
-  --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
-}
-
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--color-surface);
-    color: var(--color-on-surface);
-    transition: background-color 0.25s ease, color 0.25s ease;
+    background-color: #0d1322;
+    color: #dde2f8;
   }
 }
 
-/* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -76,7 +18,7 @@ html.light {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-outline-variant);
+  background: #2f3445;
   border-radius: 10px;
 }
 
@@ -84,15 +26,8 @@ html.light {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* Sidebar Active Link Styling */
 .active-nav {
   background: linear-gradient(90deg, rgba(124, 58, 237, 0.15) 0%, transparent 100%);
-  border-left: 3px solid #7c3aed;
-  color: #7c3aed;
-}
-
-html.dark .active-nav {
-  background: linear-gradient(90deg, rgba(124, 58, 237, 0.25) 0%, transparent 100%);
   border-left: 3px solid #d2bbff;
   color: #d2bbff;
 }

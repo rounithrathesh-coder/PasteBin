@@ -94,15 +94,12 @@ export const Navbar: React.FC = () => {
 
         <div className="h-7 w-[1px] bg-outline-variant/50 mx-0.5"></div>
 
-        {/* Theme Toggle */}
+        {/* Dark Theme Indicator */}
         <button
-          onClick={toggleTheme}
           className="p-2 text-outline hover:text-on-surface transition-colors rounded-lg hover:bg-surface-variant/40"
-          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          title="Dark Theme Active"
         >
-          <span className="material-symbols-outlined text-xl">
-            {theme === 'dark' ? 'light_mode' : 'dark_mode'}
-          </span>
+          <span className="material-symbols-outlined text-xl">dark_mode</span>
         </button>
 
         {/* Notifications */}
