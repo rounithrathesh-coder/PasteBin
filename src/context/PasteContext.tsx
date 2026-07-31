@@ -327,6 +327,8 @@ interface PasteContextType {
   setActiveSnippet: (s: Snippet | null) => void;
   isEditorModalOpen: boolean;
   setIsEditorModalOpen: (open: boolean) => void;
+  theme: 'dark' | 'light';
+  toggleTheme: () => void;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
   isAuthenticated: boolean;
@@ -362,7 +364,22 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [sortBy, setSortBy] = useState('Latest');
   const [selectedSnippetIds, setSelectedSnippetIds] = useState<string[]>([]);
   const [activeSnippet, setActiveSnippet] = useState<Snippet | null>(null);
-  const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    } else {
+      root.classList.remove('light');
+      root.classList.add('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
@@ -513,6 +530,8 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setActiveSnippet,
         isEditorModalOpen,
         setIsEditorModalOpen,
+        theme,
+        toggleTheme,
         isAuthModalOpen,
         setIsAuthModalOpen,
         isAuthenticated,

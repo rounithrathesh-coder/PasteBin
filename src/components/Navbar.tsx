@@ -10,7 +10,9 @@ export const Navbar: React.FC = () => {
     setIsAuthModalOpen,
     setActiveView,
     isAuthenticated,
-    logout
+    logout,
+    theme,
+    toggleTheme
   } = usePastes();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -94,10 +96,13 @@ export const Navbar: React.FC = () => {
 
         {/* Theme Toggle */}
         <button
+          onClick={toggleTheme}
           className="p-2 text-outline hover:text-on-surface transition-colors rounded-lg hover:bg-surface-variant/40"
-          title="Toggle Theme"
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
         >
-          <span className="material-symbols-outlined text-xl">light_mode</span>
+          <span className="material-symbols-outlined text-xl">
+            {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+          </span>
         </button>
 
         {/* Notifications */}
