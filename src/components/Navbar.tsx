@@ -92,16 +92,6 @@ export const Navbar: React.FC = () => {
           New Paste
         </button>
 
-        <div className="h-7 w-[1px] bg-outline-variant/50 mx-0.5"></div>
-
-        {/* Dark Theme Indicator */}
-        <button
-          className="p-2 text-outline hover:text-on-surface transition-colors rounded-lg hover:bg-surface-variant/40"
-          title="Dark Theme Active"
-        >
-          <span className="material-symbols-outlined text-xl">dark_mode</span>
-        </button>
-
         {/* Notifications */}
         <div className="relative">
           <button
