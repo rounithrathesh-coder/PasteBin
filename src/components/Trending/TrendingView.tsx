@@ -4,111 +4,21 @@ import { Snippet } from '../../types/paste';
 import { TrendingWidgets } from './TrendingWidgets';
 
 export const TrendingView: React.FC = () => {
-  const { setActiveSnippet, setIsEditorModalOpen, showToast, toggleFavorite } = usePastes();
+  const { pastes, setActiveSnippet, setIsEditorModalOpen, showToast, toggleFavorite } = usePastes();
 
   const [timeframe, setTimeframe] = useState<'today' | 'week' | 'month'>('week');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [sortBy, setSortBy] = useState('Most Viewed');
 
-  // Sample trending dataset
-  const trendingSnippets: (Snippet & { rank: number; stars: number; likes: number; copies: number })[] = [
-    {
-      rank: 1,
-      id: 'tr-01',
-      title: 'FastAPI Clean Architecture Template',
-      description: 'Production-ready FastAPI boilerplate with Dependency Injection, Alembic migrations, and JWT auth',
-      code: `from fastapi import FastAPI, Depends, HTTPException\nfrom pydantic import BaseModel\n\napp = FastAPI(title="Production API", version="1.0.0")\n\n@app.get("/health")\nasync def health_check():\n    return {"status": "healthy", "database": "connected"}`,
-      language: 'Python',
-      visibility: 'Public',
-      views: 18420,
-      stars: 1240,
-      likes: 890,
-      copies: 3420,
-      lines: 48,
-      fileSize: '3.8 KB',
-      author: 'dev_master',
-      isVerifiedAuthor: true,
-      createdAt: '2 days ago',
-      tags: ['fastapi', 'python', 'clean-architecture', 'jwt']
-    },
-    {
-      rank: 2,
-      id: 'tr-02',
-      title: 'React Custom Hooks Collection 2026',
-      description: 'Handcrafted production hooks: useDebounce, useLocalStorage, useIntersectionObserver, useAsync',
-      code: `import { useState, useEffect } from 'react';\n\nexport function useDebounce<T>(value: T, delay: number): T {\n  const [debouncedValue, setDebouncedValue] = useState<T>(value);\n  useEffect(() => {\n    const handler = setTimeout(() => setDebouncedValue(value), delay);\n    return () => clearTimeout(handler);\n  }, [value, delay]);\n  return debouncedValue;\n}`,
-      language: 'TypeScript',
-      visibility: 'Public',
-      views: 14200,
-      stars: 980,
-      likes: 720,
-      copies: 2850,
-      lines: 62,
-      fileSize: '4.2 KB',
-      author: 'ui_developer',
-      isVerifiedAuthor: true,
-      createdAt: '3 days ago',
-      tags: ['react', 'typescript', 'hooks', 'frontend']
-    },
-    {
-      rank: 3,
-      id: 'tr-03',
-      title: 'PostgreSQL Query Performance Tuning Kit',
-      description: 'Advanced EXPLAIN ANALYZE queries, index optimization scripts, and deadlock detector triggers',
-      code: `SELECT schemaname, relname, seq_scan, seq_tup_read,\n       idx_scan, idx_tup_fetch\nFROM pg_stat_user_tables\nWHERE seq_scan > 0\nORDER BY seq_tup_read DESC LIMIT 10;`,
-      language: 'SQL',
-      visibility: 'Public',
-      views: 11800,
-      stars: 840,
-      likes: 610,
-      copies: 1940,
-      lines: 34,
-      fileSize: '2.6 KB',
-      author: 'data_guy',
-      isVerifiedAuthor: true,
-      createdAt: '4 days ago',
-      tags: ['sql', 'postgres', 'performance', 'indexing']
-    },
-    {
-      rank: 4,
-      id: 'tr-04',
-      title: 'Docker Multi-Stage Build for Next.js App Router',
-      description: 'Minimal Alpine-based standalone Dockerfile reducing image size from 1.2GB down to 85MB',
-      code: `FROM node:20-alpine AS base\nFROM base AS deps\nRUN apk add --no-cache libc6-compat\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci\n\nFROM base AS builder\nWORKDIR /app\nCOPY --from=deps /app/node_modules ./node_modules\nCOPY . .\nRUN npm run build`,
-      language: 'Docker',
-      visibility: 'Public',
-      views: 9400,
-      stars: 710,
-      likes: 540,
-      copies: 1620,
-      lines: 40,
-      fileSize: '1.9 KB',
-      author: 'devops_lead',
-      isVerifiedAuthor: true,
-      createdAt: '5 days ago',
-      tags: ['docker', 'nextjs', 'devops', 'alpine']
-    },
-    {
-      rank: 5,
-      id: 'tr-05',
-      title: 'Go High-Concurrency Worker Pool Engine',
-      description: 'Thread-safe goroutine worker pool with channel buffering, context timeout, and graceful shutdown',
-      code: `package main\n\nimport (\n\t"context"\n\t"fmt"\n\t"sync"\n\t"time"\n)\n\ntype Job struct { ID int }\n\nfunc worker(ctx context.Context, id int, jobs <-chan Job, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tfor j := range jobs {\n\t\tfmt.Printf("Worker %d processing job %d\\n", id, j.ID)\n\t}\n}`,
-      language: 'Go',
-      visibility: 'Public',
-      views: 8100,
-      stars: 620,
-      likes: 480,
-      copies: 1290,
-      lines: 45,
-      fileSize: '2.8 KB',
-      author: 'algo_expert',
-      isVerifiedAuthor: true,
-      createdAt: '6 days ago',
-      tags: ['go', 'golang', 'concurrency', 'workerpool']
-    }
-  ];
+  // Dynamic trending dataset computed from live pastes state
+  const trendingSnippets = pastes.map((p, idx) => ({
+    ...p,
+    rank: idx + 1,
+    stars: p.stars || Math.floor(p.views * 0.4) + 12,
+    likes: p.likes || Math.floor(p.views * 0.3) + 8,
+    copies: p.copies || Math.floor(p.views * 0.6) + 15
+  }));
 
   // Filtering
   const filtered = trendingSnippets.filter((p) => {
