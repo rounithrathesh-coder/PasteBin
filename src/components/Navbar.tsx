@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { usePastes } from '../context/PasteContext';
 
 export const Navbar: React.FC = () => {
-  const { searchQuery, setSearchQuery, setIsEditorModalOpen, setActiveSnippet } = usePastes();
+  const { searchQuery, setSearchQuery, setIsEditorModalOpen, setActiveSnippet, setIsAuthModalOpen, setActiveView } = usePastes();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -87,8 +87,20 @@ export const Navbar: React.FC = () => {
           </span>
         </div>
 
-        {/* User Profile */}
-        <div className="flex items-center gap-2 ml-1 cursor-pointer group p-1 rounded-lg hover:bg-surface-variant/40 transition-colors">
+        {/* Sign In & User Profile */}
+        <button
+          onClick={() => setIsAuthModalOpen(true)}
+          className="px-3 py-1.5 rounded-lg border border-outline-variant/60 bg-surface-container-high/60 text-xs font-mono font-semibold text-on-surface hover:border-outline hover:bg-surface-container-high transition-all flex items-center gap-1.5"
+        >
+          <span className="material-symbols-outlined text-base">login</span>
+          Sign In
+        </button>
+
+        <div
+          onClick={() => setActiveView('account')}
+          className="flex items-center gap-2 ml-1 cursor-pointer group p-1 rounded-lg hover:bg-surface-variant/40 transition-colors"
+          title="Account Settings"
+        >
           <div className="w-8 h-8 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs ring-1 ring-primary/20">
             RA
           </div>

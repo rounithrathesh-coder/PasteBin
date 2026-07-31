@@ -21,6 +21,7 @@ import { IntegrationsView } from './components/Integrations/IntegrationsView';
 import { SystemHealthView } from './components/SystemHealth/SystemHealthView';
 import { PreferencesView } from './components/Preferences/PreferencesView';
 import { AccountView } from './components/Account/AccountView';
+import { AuthModal } from './components/Auth/AuthModal';
 
 /* ─── Dashboard ─── */
 const DashboardViewContent: React.FC = () => {
@@ -120,7 +121,7 @@ const PlaceholderPage: React.FC<{ title: string; subtitle: string; icon: string 
 
 /* ─── Main Layout ─── */
 const MainAppLayout: React.FC = () => {
-  const { activeView, toastMessage } = usePastes();
+  const { activeView, toastMessage, isAuthModalOpen, setIsAuthModalOpen } = usePastes();
 
   const renderView = () => {
     switch (activeView) {
@@ -170,6 +171,9 @@ const MainAppLayout: React.FC = () => {
 
       {/* Monaco Editor Modal */}
       <MonacoEditorModal />
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
       {/* Toast Feedback Banner */}
       {toastMessage && (
