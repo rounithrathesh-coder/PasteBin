@@ -1,6 +1,8 @@
 import React from 'react';
+import { usePastes } from '../../context/PasteContext';
 
 export const TrendingWidgets: React.FC = () => {
+  const { showToast } = usePastes();
   const topContributors = [
     { name: 'dev_master', avatar: 'DM', count: '142 pastes', points: '2.8K stars' },
     { name: 'ui_developer', avatar: 'UI', count: '98 pastes', points: '1.9K stars' },
@@ -123,6 +125,7 @@ export const TrendingWidgets: React.FC = () => {
           {trendingTags.map((tag) => (
             <button
               key={tag.name}
+              onClick={() => showToast(`Tag filter selected: ${tag.name}`)}
               className="px-2.5 py-1 rounded-md bg-surface-container-highest/80 hover:bg-surface-container-highest border border-outline-variant/40 text-[11px] font-mono text-outline hover:text-on-surface transition-all flex items-center gap-1"
             >
               <span>{tag.name}</span>

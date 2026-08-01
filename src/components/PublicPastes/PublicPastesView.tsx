@@ -8,6 +8,8 @@ export const PublicPastesView: React.FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [selectedTime, setSelectedTime] = useState('All Time');
   const [sortBy, setSortBy] = useState('Most Viewed');
+  const [showMoreLanguages, setShowMoreLanguages] = useState(false);
+  const [advancedFiltersVisible, setAdvancedFiltersVisible] = useState(true);
 
   const chips = [
     { key: 'All', label: 'All', count: '1,248' },
@@ -80,14 +82,19 @@ export const PublicPastesView: React.FC = () => {
             })}
 
             {/* More Dropdown */}
-            <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-mono text-outline hover:text-on-surface bg-surface-container-high/60 border border-outline-variant/50 transition-all shrink-0">
-              <span>More</span>
-              <span className="material-symbols-outlined text-sm">expand_more</span>
+            <button onClick={() => setShowMoreLanguages((visible) => !visible)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-mono text-outline hover:text-on-surface bg-surface-container-high/60 border border-outline-variant/50 transition-all shrink-0">
+              <span>{showMoreLanguages ? 'Less' : 'More'}</span>
+              <span className="material-symbols-outlined text-sm">{showMoreLanguages ? 'expand_less' : 'expand_more'}</span>
             </button>
+            {showMoreLanguages && ['Go', 'Rust', 'Bash'].map((language) => (
+              <button key={language} onClick={() => { setActiveChip(language); setSelectedLanguage(language); }} className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-mono bg-surface-container-high/60 text-outline hover:text-on-surface border border-outline-variant/50">
+                {language}
+              </button>
+            ))}
           </div>
 
           {/* Advanced Filter Toolbar */}
-          <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center shadow-sm">
+          {advancedFiltersVisible && <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center shadow-sm">
             {/* Search Input */}
             <div className="sm:col-span-5 relative group">
               <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg group-focus-within:text-primary transition-colors">
@@ -170,6 +177,7 @@ export const PublicPastesView: React.FC = () => {
               )}
 
               <button
+                onClick={() => setAdvancedFiltersVisible((visible) => !visible)}
                 className="p-2 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-outline hover:text-on-surface hover:border-outline transition-colors shrink-0"
                 title="Advanced Filter Options"
               >
@@ -177,6 +185,11 @@ export const PublicPastesView: React.FC = () => {
               </button>
             </div>
           </div>
+          }
+
+          {!advancedFiltersVisible && (
+            <button onClick={() => setAdvancedFiltersVisible(true)} className="text-xs font-mono text-primary hover:underline text-left">Show advanced filters</button>
+          )}
 
           {/* Snippets Table */}
           <PublicPastesTable

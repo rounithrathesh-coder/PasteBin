@@ -18,6 +18,10 @@ export const config = {
   // 1. OpenRouter AI
   openRouterKey: process.env.OPENROUTER_API_KEY || '',
 
+  // Local open-source AI (Ollama)
+  ollamaBaseUrl: process.env.OLLAMA_BASE_URL || '',
+  ollamaModel: process.env.OLLAMA_MODEL || 'llama3.2:3b',
+
   // 2. Hugging Face AI
   huggingFaceKey: process.env.HUGGINGFACE_API_KEY || '',
 
@@ -44,6 +48,8 @@ export const isServiceConfigured = (serviceName) => {
   switch (serviceName) {
     case 'openrouter':
       return Boolean(config.openRouterKey && config.openRouterKey !== 'your_openrouter_key');
+    case 'ollama':
+      return Boolean(config.ollamaBaseUrl);
     case 'huggingface':
       return Boolean(config.huggingFaceKey && config.huggingFaceKey !== 'your_huggingface_key');
     case 'supabase':
@@ -51,7 +57,11 @@ export const isServiceConfigured = (serviceName) => {
     case 'turnstile':
       return Boolean(config.turnstileSecretKey && config.turnstileSecretKey !== 'your_turnstile_secret_key');
     case 'r2':
-      return Boolean(config.r2Endpoint && config.r2Endpoint !== 'your_r2_endpoint');
+      return Boolean(
+        config.r2Endpoint && config.r2Endpoint !== 'your_r2_endpoint' &&
+        config.r2AccessKeyId && config.r2AccessKeyId !== 'your_r2_access_key' &&
+        config.r2SecretAccessKey && config.r2SecretAccessKey !== 'your_r2_secret_access_key'
+      );
     default:
       return false;
   }

@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePastes } from '../context/PasteContext';
 import { ViewType } from '../types/paste';
 
 export const Sidebar: React.FC = () => {
-  const { activeView, setActiveView, setFilterVisibility } = usePastes();
+  const { activeView, setActiveView, setFilterVisibility, showToast } = usePastes();
+  const [storage, setStorage] = useState<{ display: string; percent: number } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(data => { if (data.storage) setStorage(data.storage); })
+      .catch(() => {});
+  }, []);
 
   const handleNavClick = (view: ViewType) => {
     setActiveView(view);
@@ -16,7 +24,7 @@ export const Sidebar: React.FC = () => {
   };
 
   const navItemClass = (view: ViewType) =>
-    `w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-left ${
+    `nav-motion w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-left ${
       activeView === view
         ? 'active-nav'
         : 'text-on-surface-variant hover:bg-surface-variant/60 hover:text-on-surface'
@@ -106,14 +114,17 @@ export const Sidebar: React.FC = () => {
               <span className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-sm text-primary">cloud</span> Storage Usage
               </span>
-              <span className="text-[10px] font-mono text-outline">23%</span>
+              <span className="text-[10px] font-mono text-outline">{storage ? `${storage.percent}%` : '—'}</span>
             </div>
-            <div className="text-[11px] font-mono text-outline">2.34 GB / 10 GB (23%)</div>
+            <div className="text-[11px] font-mono text-outline">{storage?.display ?? 'Loading...'}</div>
             <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-              <div className="bg-primary h-full w-[23%] rounded-full"></div>
+              <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${Math.max(storage?.percent ?? 0, 1)}%` }}></div>
             </div>
           </div>
-          <button className="w-full py-2 px-3 bg-primary/10 text-primary border border-primary/20 rounded-lg text-xs font-semibold hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5">
+          <button
+            onClick={() => showToast('Storage upgrades are not enabled in the local workspace.')}
+            className="button-press w-full py-2 px-3 bg-primary/10 text-primary border border-primary/20 rounded-lg text-xs font-semibold hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5"
+          >
             <span className="material-symbols-outlined text-sm">workspace_premium</span> Upgrade Storage
           </button>
         </div>

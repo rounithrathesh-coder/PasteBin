@@ -37,6 +37,26 @@ export const MonacoEditorModal: React.FC = () => {
     setAiOutput(null);
   }, [activeSnippet, isEditorModalOpen]);
 
+  const handleLocalFileUpload = (file: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      if (content !== undefined) {
+        if (isNewPaste) setTitle(file.name);
+        setCode(content);
+        const ext = file.name.split('.').pop()?.toLowerCase() || '';
+        const extMap: Record<string, string> = {
+          py: 'Python', js: 'JavaScript', ts: 'TypeScript', html: 'HTML',
+          css: 'CSS', sql: 'SQL', sh: 'Bash', cpp: 'C++', go: 'Go', rs: 'Rust', json: 'YAML'
+        };
+        if (extMap[ext]) setLanguage(extMap[ext]);
+        showToast(`Loaded file "${file.name}" into Monaco Editor!`);
+      }
+    };
+    reader.readAsText(file);
+  };
+
   if (!isEditorModalOpen) return null;
 
   const isNewPaste = !activeSnippet;
@@ -212,6 +232,19 @@ export const MonacoEditorModal: React.FC = () => {
             >
               <span className="material-symbols-outlined text-base">content_copy</span>
             </button>
+
+            <label
+              className="p-1.5 rounded-lg bg-surface-container-lowest border border-outline-variant/60 text-outline hover:text-on-surface transition-colors cursor-pointer"
+              title="Upload Local Code File"
+            >
+              <span className="material-symbols-outlined text-base">upload_file</span>
+              <input
+                type="file"
+                className="hidden"
+                accept=".py,.js,.jsx,.ts,.tsx,.html,.css,.sql,.go,.rs,.cpp,.c,.h,.sh,.json,.yml,.yaml,.md,.txt"
+                onChange={(e) => e.target.files?.[0] && handleLocalFileUpload(e.target.files[0])}
+              />
+            </label>
 
             <button
               onClick={handleDownload}

@@ -230,6 +230,12 @@ export const TrashView: React.FC = () => {
               </div>
 
               <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedLanguage('All');
+                  setSelectedTime('All Time');
+                  setSortBy('Deleted (Newest)');
+                }}
                 className="p-2 bg-surface-container-lowest border border-outline-variant/60 rounded-lg text-outline hover:text-on-surface hover:border-outline transition-colors shrink-0"
                 title="Filter options"
               >

@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePastes } from '../../context/PasteContext';
 
 export const SnippetOverview: React.FC = () => {
   const { pastes } = usePastes();
+  const [storage, setStorage] = useState<{ display: string; percent: number } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(r => r.json())
+      .then(data => { if (data.storage) setStorage({ display: data.storage, percent: Math.min(100, parseFloat(data.storage) || 0) }); })
+      .catch(() => {});
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(data => { if (data.storage) setStorage(data.storage); })
+      .catch(() => {});
+  }, [pastes.length]);
 
   const total = pastes.length;
   const publicCount = pastes.filter((p) => p.visibility === 'Public').length;
@@ -50,10 +62,10 @@ export const SnippetOverview: React.FC = () => {
           <span className="text-on-surface-variant flex items-center gap-1">
             <span className="material-symbols-outlined text-sm text-primary">cloud</span> Storage Used
           </span>
-          <span className="text-outline">2.34 GB / 10 GB (23%)</span>
+          <span className="text-outline">{storage?.display ?? 'Loading...'}</span>
         </div>
         <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-          <div className="bg-primary h-full w-[23%] rounded-full"></div>
+          <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${Math.max(storage?.percent ?? 0, 1)}%` }}></div>
         </div>
       </div>
     </div>

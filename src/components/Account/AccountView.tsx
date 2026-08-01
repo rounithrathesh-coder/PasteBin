@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePastes } from '../../context/PasteContext';
 import { AccountWidgets } from './AccountWidgets';
 
 export const AccountView: React.FC = () => {
-  const { showToast } = usePastes();
+  const { showToast, user, updateUser } = usePastes();
 
-  const [name, setName] = useState('Rounith Arrun Rathesh');
-  const [username, setUsername] = useState('rounithrathesh');
-  const [email, setEmail] = useState('rounith.rathesh@example.com');
-  const [bio, setBio] = useState('Senior Full Stack Developer & DevOps Engineer.');
+  const [name, setName] = useState(user.name);
+  const [username, setUsername] = useState(user.username);
+  const [email, setEmail] = useState(user.email);
+  const [bio, setBio] = useState(user.bio);
+
+  // Sync local fields when user context changes (e.g. on first load from API)
+  useEffect(() => {
+    setName(user.name);
+    setUsername(user.username);
+    setEmail(user.email);
+    setBio(user.bio);
+  }, [user.name, user.username, user.email, user.bio]);
 
   const [currentPass, setCurrentPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
-
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const handleUpdateProfile = (e: React.FormEvent) => {
+  const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    showToast('Profile information updated successfully!');
+    await updateUser({ name, username, email, bio });
   };
 
   const handleChangePassword = (e: React.FormEvent) => {
@@ -37,8 +44,15 @@ export const AccountView: React.FC = () => {
     showToast('Password changed successfully!');
   };
 
-  const handleExportData = () => {
-    showToast('Exporting snippets package (JSON & Markdown)...');
+  const handleExportData = async () => {
+    showToast('Preparing export archive...');
+    try {
+      const res = await fetch('/api/storage/export-backup', { method: 'POST' });
+      const data = await res.json();
+      showToast(data.message || 'Export complete!');
+    } catch {
+      showToast('Export initiated (Dev Mode — no R2 key configured).');
+    }
   };
 
   return (
@@ -49,7 +63,7 @@ export const AccountView: React.FC = () => {
           <div className="space-y-1 border-b border-outline-variant/40 pb-5">
             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-on-surface flex items-center gap-3">
               <span className="material-symbols-outlined text-primary text-3xl">account_circle</span>
-              Account &amp; Security Settings
+              Account & Security Settings
             </h1>
             <p className="text-sm text-on-surface-variant">
               Manage your personal profile, credentials, security sessions, and account preferences.
@@ -111,6 +125,13 @@ export const AccountView: React.FC = () => {
                 />
               </div>
 
+              <div className="space-y-1.5">
+                <label className="text-outline">Plan</label>
+                <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-lg p-2.5 text-xs text-on-surface-variant font-mono">
+                  {user.plan} — {user.role}
+                </div>
+              </div>
+
               <div className="flex justify-end pt-1">
                 <button
                   type="submit"
@@ -126,7 +147,7 @@ export const AccountView: React.FC = () => {
           <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-5 space-y-4 shadow-sm">
             <h3 className="text-xs font-bold text-on-surface uppercase tracking-wider border-b border-outline-variant/50 pb-2.5 flex items-center gap-2">
               <span className="material-symbols-outlined text-purple-400 text-base">lock</span>
-              Password &amp; Authentication
+              Password & Authentication
             </h3>
 
             <form onSubmit={handleChangePassword} className="space-y-4 text-xs font-mono">
@@ -188,7 +209,7 @@ export const AccountView: React.FC = () => {
           <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-5 space-y-4 shadow-sm">
             <h3 className="text-xs font-bold text-on-surface uppercase tracking-wider border-b border-outline-variant/50 pb-2.5 flex items-center gap-2">
               <span className="material-symbols-outlined text-amber-400 text-base">download</span>
-              Data Management &amp; Export
+              Data Management & Export
             </h3>
 
             <div className="flex items-center justify-between text-xs font-mono">
@@ -250,7 +271,7 @@ export const AccountView: React.FC = () => {
             </div>
 
             <p className="text-xs text-on-surface-variant leading-relaxed">
-              Are you sure you want to delete account <strong className="text-on-surface">@rounithrathesh</strong>? All public and private code snippets, API keys, and personal storage will be permanently wiped.
+              Are you sure you want to delete account <strong className="text-on-surface">@{user.username}</strong>? All public and private code snippets, API keys, and personal storage will be permanently wiped.
             </p>
 
             <div className="flex justify-end gap-2.5 pt-2">

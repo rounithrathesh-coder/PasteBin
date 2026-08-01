@@ -1,0 +1,17 @@
+services:
+  pastebin:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_FILE: /app/data/db.json
+    volumes:
+      - pastebin-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  pastebin-data:

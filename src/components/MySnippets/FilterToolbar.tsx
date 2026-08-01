@@ -31,11 +31,16 @@ export const FilterToolbar: React.FC<{
     }
   };
 
+  // Derive distinct languages dynamically from live pastes
+  const availableLanguages = Array.from(
+    new Set(pastes.map((p) => p.language))
+  ).filter(Boolean).sort();
+
   return (
     <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-4 space-y-3.5 shadow-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-        {/* Wider Search Bar with Focus Glow */}
-        <div className="sm:col-span-6 relative group">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        {/* Search Bar */}
+        <div className="flex-1 relative group min-w-[200px]">
           <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-lg group-focus-within:text-primary transition-colors">
             search
           </span>
@@ -44,102 +49,112 @@ export const FilterToolbar: React.FC<{
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search snippets by title, description, code content, or #tags..."
-            className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 pl-10 pr-4 text-xs font-mono text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary/20 focus:shadow-md focus:shadow-primary/10 transition-all duration-200 placeholder:text-outline/60"
+            className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 pl-10 pr-8 text-xs font-mono text-on-surface focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/60"
           />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface"
+            >
+              <span className="material-symbols-outlined text-sm">close</span>
+            </button>
+          )}
         </div>
 
-        {/* Language Selector */}
-        <div className="sm:col-span-2 relative">
-          <select
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 px-3 text-xs font-mono text-on-surface focus:outline-none focus:border-primary hover:border-outline transition-all duration-200 appearance-none cursor-pointer"
-          >
-            <option value="All">All Languages</option>
-            <option value="Python">Python</option>
-            <option value="JavaScript">JavaScript</option>
-            <option value="HTML">HTML</option>
-            <option value="SQL">SQL</option>
-            <option value="C++">C++</option>
-            <option value="Bash">Bash</option>
-          </select>
-          <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
-            unfold_more
-          </span>
-        </div>
+        {/* Filter Controls Group */}
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          {/* Language Selector */}
+          <div className="relative w-36 sm:w-40">
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 pl-3 pr-8 text-xs font-mono text-on-surface focus:outline-none focus:border-primary hover:border-outline transition-all appearance-none cursor-pointer truncate"
+            >
+              <option value="All">All Languages</option>
+              {availableLanguages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+            <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+              unfold_more
+            </span>
+          </div>
 
-        {/* Folder Selector */}
-        <div className="sm:col-span-2 relative">
-          <select
-            value={filterFolder}
-            onChange={(e) => setFilterFolder(e.target.value)}
-            className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 px-3 text-xs font-mono text-on-surface focus:outline-none focus:border-primary hover:border-outline transition-all duration-200 appearance-none cursor-pointer"
-          >
-            <option value="All">All Folders</option>
-            {folders.map((f) => (
-              <option key={f.id} value={f.name}>
-                {f.name} ({f.count})
-              </option>
-            ))}
-          </select>
-          <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
-            unfold_more
-          </span>
-        </div>
+          {/* Folder Selector */}
+          <div className="relative w-36 sm:w-40">
+            <select
+              value={filterFolder}
+              onChange={(e) => setFilterFolder(e.target.value)}
+              className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 pl-3 pr-8 text-xs font-mono text-on-surface focus:outline-none focus:border-primary hover:border-outline transition-all appearance-none cursor-pointer truncate"
+            >
+              <option value="All">All Folders</option>
+              {folders.map((f) => (
+                <option key={f.id} value={f.name}>
+                  {f.name} ({f.count})
+                </option>
+              ))}
+            </select>
+            <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+              unfold_more
+            </span>
+          </div>
 
-        {/* Sort Selector */}
-        <div className="sm:col-span-1 relative">
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 px-3 text-xs font-mono text-on-surface focus:outline-none focus:border-primary hover:border-outline transition-all duration-200 appearance-none cursor-pointer"
-          >
-            <option value="Latest">Latest</option>
-            <option value="Views">Views</option>
-            <option value="Title">Name</option>
-          </select>
-          <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
-            unfold_more
-          </span>
-        </div>
+          {/* Sort Selector */}
+          <div className="relative w-32 sm:w-36">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-lg py-2.5 pl-3 pr-8 text-xs font-mono text-on-surface focus:outline-none focus:border-primary hover:border-outline transition-all appearance-none cursor-pointer truncate"
+            >
+              <option value="Latest">Latest</option>
+              <option value="Views">Views</option>
+              <option value="Title">Name</option>
+            </select>
+            <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">
+              unfold_more
+            </span>
+          </div>
 
-        {/* View Mode & Select Mode Toggle */}
-        <div className="sm:col-span-1 flex items-center justify-end gap-1">
-          <button
-            onClick={handleToggleSelectAll}
-            className={`p-2 rounded-lg border transition-all duration-200 ${
-              selectedSnippetIds.length > 0
-                ? 'bg-primary/20 text-primary border-primary/40 shadow-sm'
-                : 'bg-surface-container-lowest border-outline-variant/60 text-outline hover:text-on-surface hover:border-outline'
-            }`}
-            title={selectedSnippetIds.length > 0 ? 'Deselect All' : 'Select All / Multi-Select'}
-          >
-            <span className="material-symbols-outlined text-base">checklist</span>
-          </button>
+          {/* View Mode & Multi-Select Buttons */}
+          <div className="flex items-center gap-1 border-l border-outline-variant/50 pl-2">
+            <button
+              onClick={handleToggleSelectAll}
+              className={`p-2 rounded-lg border transition-all duration-200 ${
+                selectedSnippetIds.length > 0
+                  ? 'bg-primary/20 text-primary border-primary/40 shadow-sm'
+                  : 'bg-surface-container-lowest border-outline-variant/60 text-outline hover:text-on-surface hover:border-outline'
+              }`}
+              title={selectedSnippetIds.length > 0 ? 'Deselect All' : 'Select All / Multi-Select'}
+            >
+              <span className="material-symbols-outlined text-base">checklist</span>
+            </button>
 
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg border transition-all duration-200 ${
-              viewMode === 'list'
-                ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm'
-                : 'bg-surface-container-lowest border-outline-variant/60 text-outline hover:text-on-surface hover:border-outline'
-            }`}
-            title="List View"
-          >
-            <span className="material-symbols-outlined text-base">format_list_bulleted</span>
-          </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-lg border transition-all duration-200 ${
+                viewMode === 'list'
+                  ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm'
+                  : 'bg-surface-container-lowest border-outline-variant/60 text-outline hover:text-on-surface hover:border-outline'
+              }`}
+              title="List View"
+            >
+              <span className="material-symbols-outlined text-base">format_list_bulleted</span>
+            </button>
 
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg border transition-all duration-200 ${
-              viewMode === 'grid'
-                ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm'
-                : 'bg-surface-container-lowest border-outline-variant/60 text-outline hover:text-on-surface hover:border-outline'
-            }`}
-            title="Grid View"
-          >
-            <span className="material-symbols-outlined text-base">grid_view</span>
-          </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-lg border transition-all duration-200 ${
+                viewMode === 'grid'
+                  ? 'bg-primary-container text-on-primary-container border-primary-container shadow-sm'
+                  : 'bg-surface-container-lowest border-outline-variant/60 text-outline hover:text-on-surface hover:border-outline'
+              }`}
+              title="Grid View"
+            >
+              <span className="material-symbols-outlined text-base">grid_view</span>
+            </button>
+          </div>
         </div>
       </div>
 

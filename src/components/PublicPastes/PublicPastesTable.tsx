@@ -13,7 +13,7 @@ export const PublicPastesTable: React.FC<PublicPastesTableProps> = ({
   selectedLanguage,
   sortBy
 }) => {
-  const { pastes, setActiveSnippet, setIsEditorModalOpen, showToast, toggleFavorite } = usePastes();
+  const { pastes, setActiveSnippet, setIsEditorModalOpen, showToast, toggleFavorite, sharePaste } = usePastes();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -54,8 +54,7 @@ export const PublicPastesTable: React.FC<PublicPastesTableProps> = ({
 
   const handleCopyLink = (e: React.MouseEvent, p: Snippet) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(`https://pastebin.dev/p/${p.id}`);
-    showToast(`Copied public link for "${p.title}"!`);
+    sharePaste(p);
   };
 
   const handleReport = (e: React.MouseEvent, p: Snippet) => {

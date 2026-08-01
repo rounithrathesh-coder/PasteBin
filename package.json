@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node server/index.js & vite",
     "server": "node server/index.js",
-    "start": "node server/index.js & vite",
+    "start": "node server/index.js",
+    "start:web": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

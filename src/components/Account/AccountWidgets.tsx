@@ -1,47 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { usePastes } from '../../context/PasteContext';
 
 export const AccountWidgets: React.FC = () => {
-  const securityLogs = [
-    { event: 'Password changed successfully', time: '30 days ago' },
-    { event: 'New login from macOS - Chrome (192.168.88.7)', time: '2 hours ago' },
-    { event: '2FA Authenticator enabled', time: '45 days ago' },
-    { event: 'API Key "pb_live_..." generated', time: '60 days ago' }
-  ];
+  const { user, pastes } = usePastes();
+
+  const avatarInitials = user.name
+    .split(' ')
+    .map(w => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'U';
+
+  const [securityLogs, setSecurityLogs] = useState([
+    { event: 'Account session started', time: 'Just now' },
+    { event: '2FA Authenticator enabled', time: '30 days ago' },
+    { event: 'API Key generated', time: '60 days ago' }
+  ]);
+
+  useEffect(() => {
+    // Generate a security log entry based on recent activity
+    const recentPastes = pastes.filter(p => p.createdAt === 'Just now');
+    if (recentPastes.length > 0) {
+      setSecurityLogs(prev => [
+        { event: `New paste "${recentPastes[0].title}" published`, time: 'Just now' },
+        ...prev.slice(0, 3)
+      ]);
+    }
+  }, [pastes.length]);
 
   return (
     <div className="space-y-6">
       {/* Account Stats Widget */}
       <div className="bg-surface-container-low border border-outline-variant/60 rounded-xl p-4 space-y-4 shadow-sm text-center">
         <div className="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container font-bold text-2xl flex items-center justify-center mx-auto ring-2 ring-primary/30 shadow-md">
-          RA
+          {avatarInitials}
         </div>
 
         <div>
           <h3 className="text-base font-bold text-on-surface flex items-center justify-center gap-1">
-            Rounith Arrun Rathesh
+            {user.name}
             <span className="material-symbols-outlined text-blue-400 text-sm">verified</span>
           </h3>
-          <p className="text-xs font-mono text-outline">@rounithrathesh</p>
+          <p className="text-xs font-mono text-outline">@{user.username}</p>
         </div>
 
         <div className="grid grid-cols-3 gap-2 font-mono border-t border-b border-outline-variant/40 py-3 text-xs">
           <div>
-            <div className="font-bold text-on-surface text-base">28</div>
+            <div className="font-bold text-on-surface text-base">{pastes.length}</div>
             <div className="text-[10px] text-outline">Snippets</div>
           </div>
           <div>
-            <div className="font-bold text-purple-400 text-base">142</div>
-            <div className="text-[10px] text-outline">Followers</div>
+            <div className="font-bold text-purple-400 text-base">{pastes.filter(p => p.isFavorite).length}</div>
+            <div className="text-[10px] text-outline">Favorites</div>
           </div>
           <div>
-            <div className="font-bold text-emerald-400 text-base">38</div>
-            <div className="text-[10px] text-outline">Following</div>
+            <div className="font-bold text-emerald-400 text-base">{pastes.filter(p => p.visibility === 'Public').length}</div>
+            <div className="text-[10px] text-outline">Public</div>
           </div>
         </div>
 
         <div className="text-xs font-mono text-outline flex items-center justify-center gap-1.5 pt-1">
-          <span className="material-symbols-outlined text-sm">calendar_month</span>
-          <span>Member since Jan 2024</span>
+          <span className="material-symbols-outlined text-sm">badge</span>
+          <span>{user.plan} Account • {user.role}</span>
         </div>
       </div>
 

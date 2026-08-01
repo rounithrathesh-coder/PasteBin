@@ -4,7 +4,7 @@ import { IntegrationsWidgets } from './IntegrationsWidgets';
 import { api } from '../../services/api';
 
 export const IntegrationsView: React.FC = () => {
-  const { showToast } = usePastes();
+  const { showToast, user } = usePastes();
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [testingId, setTestingId] = useState<string | null>(null);
@@ -94,7 +94,7 @@ export const IntegrationsView: React.FC = () => {
       desc: 'Automatically sync public and private snippets to your GitHub Gists account.',
       connected: true,
       authType: 'OAuth 2.0',
-      account: '@rounithrathesh-coder'
+      account: `@${user.username}-coder`
     },
     {
       id: 'vscode',

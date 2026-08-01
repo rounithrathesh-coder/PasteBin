@@ -1,6 +1,25 @@
 {
   "pastes": [
     {
+      "id": "pst-1785562434431",
+      "title": "Monaco Test Paste",
+      "description": "Snippet created in JavaScript",
+      "code": "// Enter your code here...\nfunction helloWorld() {\n  console.log(\"Hello from PasteBin!\");\n}\n\nhelloWorld();",
+      "language": "JavaScript",
+      "visibility": "Public",
+      "views": 1,
+      "lines": 6,
+      "fileSize": "0.1 KB",
+      "author": "dev",
+      "createdAt": "Just now",
+      "lastOpened": "Just now",
+      "folder": "Utils",
+      "tags": [
+        "javascript"
+      ],
+      "isFavorite": false
+    },
+    {
       "id": "pst-01",
       "title": "Quick sort in Python",
       "description": "Implementation of quick sort algorithm with comments",
@@ -14,7 +33,11 @@
       "createdAt": "2 hours ago",
       "lastOpened": "10m ago",
       "folder": "DSA",
-      "tags": ["sorting", "algorithm", "python3"],
+      "tags": [
+        "sorting",
+        "algorithm",
+        "python3"
+      ],
       "isFavorite": true,
       "isPinned": true
     },
@@ -32,7 +55,11 @@
       "createdAt": "5 hours ago",
       "lastOpened": "1h ago",
       "folder": "Web Development",
-      "tags": ["navbar", "flexbox", "css3"],
+      "tags": [
+        "navbar",
+        "flexbox",
+        "css3"
+      ],
       "isFavorite": true
     },
     {
@@ -49,7 +76,11 @@
       "createdAt": "1 day ago",
       "lastOpened": "3h ago",
       "folder": "Utils",
-      "tags": ["js", "es6", "arrays"],
+      "tags": [
+        "js",
+        "es6",
+        "arrays"
+      ],
       "isFavorite": true
     },
     {
@@ -66,7 +97,11 @@
       "createdAt": "1 day ago",
       "lastOpened": "2d ago",
       "folder": "Database",
-      "tags": ["sql", "queries", "postgres"],
+      "tags": [
+        "sql",
+        "queries",
+        "postgres"
+      ],
       "isFavorite": false
     },
     {
@@ -83,7 +118,11 @@
       "createdAt": "2 days ago",
       "lastOpened": "1d ago",
       "folder": "DSA",
-      "tags": ["binarysearch", "cpp", "algorithms"],
+      "tags": [
+        "binarysearch",
+        "cpp",
+        "algorithms"
+      ],
       "isFavorite": true
     }
   ],
@@ -103,5 +142,14 @@
       "deletedAt": "2 hours ago",
       "isTrashed": true
     }
-  ]
+  ],
+  "user": {
+    "name": "Developer Pro",
+    "username": "dev",
+    "email": "dev@pastebin.local",
+    "bio": "PasteBin Enterprise developer account.",
+    "avatar": "",
+    "plan": "Pro",
+    "role": "Full Stack Engineer"
+  }
 }

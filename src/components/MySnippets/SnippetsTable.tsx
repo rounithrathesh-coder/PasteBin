@@ -16,7 +16,8 @@ export const SnippetsTable: React.FC<{ viewMode: 'list' | 'grid' }> = ({ viewMod
     setIsEditorModalOpen,
     setDeleteModalSnippet,
     showToast,
-    toggleFavorite
+    toggleFavorite,
+    sharePaste
   } = usePastes();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -292,39 +293,51 @@ export const SnippetsTable: React.FC<{ viewMode: 'list' | 'grid' }> = ({ viewMod
                       </td>
 
                       <td className="px-4 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0 font-mono text-xs ring-1 ring-primary/20">
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0 font-mono text-xs ring-1 ring-outline-variant/60 shadow-sm mt-0.5">
                             <span className="material-symbols-outlined text-lg">code</span>
                           </div>
-                          <div className="space-y-1">
-                            <div className="font-bold text-base text-on-surface group-hover:text-primary transition-colors flex items-center gap-2">
+
+                          <div className="space-y-1 min-w-0 flex-1">
+                            {/* Title Row with inline Badge */}
+                            <div className="flex items-center gap-2 flex-wrap">
                               {p.isPinned && (
-                                <span className="material-symbols-outlined text-amber-400 text-sm" title="Pinned Snippet">
+                                <span className="material-symbols-outlined text-amber-400 text-sm shrink-0" title="Pinned Snippet">
                                   push_pin
                                 </span>
                               )}
-                              {p.title}
-                              {p.createdAt && p.createdAt.includes('hour') && (
-                                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20 font-medium">
-                                  Recently Updated
+                              <h3 className="font-bold text-sm text-on-surface group-hover:text-primary transition-colors truncate">
+                                {p.title}
+                              </h3>
+                              {p.createdAt && (p.createdAt.includes('hour') || p.createdAt.includes('Just')) && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 font-semibold shrink-0 whitespace-nowrap">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+                                  Updated
                                 </span>
                               )}
                             </div>
-                            <div className="text-xs text-outline/80 font-sans line-clamp-1">{p.description}</div>
-                            {/* Extended Metadata Pills */}
-                            <div className="flex items-center gap-2.5 text-[11px] font-mono text-outline pt-0.5">
-                              <span className="px-1.5 py-0.2 rounded bg-surface-container-high text-on-surface-variant/90 border border-outline-variant/40">
-                                {p.folder || 'Utils'}
+
+                            {/* Description */}
+                            {p.description && (
+                              <p className="text-xs text-outline/80 font-sans truncate max-w-xl">
+                                {p.description}
+                              </p>
+                            )}
+
+                            {/* Horizontal Metadata Ribbon */}
+                            <div className="flex items-center gap-2 text-[11px] font-mono text-outline pt-0.5 flex-wrap">
+                              <span className="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/40 font-medium shrink-0 whitespace-nowrap text-[10px]">
+                                📁 {p.folder || 'Utils'}
                               </span>
-                              <span>{p.fileSize || '1.2 KB'}</span>
-                              <span>•</span>
-                              <span>Opened {p.lastOpened || 'recently'}</span>
+                              <span className="shrink-0">{p.fileSize || '1.2 KB'}</span>
+                              <span className="shrink-0 text-outline-variant">•</span>
+                              <span className="shrink-0">Opened {p.lastOpened || 'recently'}</span>
                               {p.tags && p.tags.length > 0 && (
                                 <>
-                                  <span>•</span>
-                                  <div className="flex items-center gap-1">
+                                  <span className="shrink-0 text-outline-variant">•</span>
+                                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
                                     {p.tags.map((t) => (
-                                      <span key={t} className="text-primary/90">
+                                      <span key={t} className="text-primary/90 hover:underline">
                                         #{t}
                                       </span>
                                     ))}
@@ -368,7 +381,7 @@ export const SnippetsTable: React.FC<{ viewMode: 'list' | 'grid' }> = ({ viewMod
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              showToast(`Share URL for "${p.title}" copied!`);
+                              sharePaste(p);
                             }}
                             className="p-1.5 hover:bg-surface-variant/80 rounded-md text-outline hover:text-on-surface transition-colors"
                             title="Share Link"

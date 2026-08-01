@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { usePastes } from '../../context/PasteContext';
 
 export const CommunityOverviewWidgets: React.FC = () => {
-  const { setActiveSnippet, setIsEditorModalOpen } = usePastes();
+  const { setActiveSnippet, setIsEditorModalOpen, showToast } = usePastes();
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  const [followedContributors, setFollowedContributors] = useState<string[]>([]);
 
   const popularLangs = [
     { name: 'Python', percent: '28%', color: 'bg-blue-500', count: '312' },
@@ -203,8 +204,16 @@ export const CommunityOverviewWidgets: React.FC = () => {
                 </div>
               </div>
 
-              <button className="p-1 rounded text-outline hover:text-purple-400 hover:bg-surface-variant/40 transition-colors">
-                <span className="material-symbols-outlined text-base">person_add</span>
+              <button
+                onClick={() => {
+                  const isFollowing = followedContributors.includes(c.name);
+                  setFollowedContributors((current) => isFollowing ? current.filter((name) => name !== c.name) : [...current, c.name]);
+                  showToast(isFollowing ? `Unfollowed ${c.name}` : `Following ${c.name}`);
+                }}
+                className="p-1 rounded text-outline hover:text-purple-400 hover:bg-surface-variant/40 transition-colors"
+                title={followedContributors.includes(c.name) ? `Unfollow ${c.name}` : `Follow ${c.name}`}
+              >
+                <span className="material-symbols-outlined text-base">{followedContributors.includes(c.name) ? 'person_remove' : 'person_add'}</span>
               </button>
             </div>
           ))}
@@ -224,6 +233,7 @@ export const CommunityOverviewWidgets: React.FC = () => {
           {trendingCollections.map((col) => (
             <button
               key={col.name}
+              onClick={() => showToast(`${col.name} collection selected.`)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono font-semibold transition-all hover:scale-105 active:scale-95 ${col.badgeColor}`}
             >
               <span className="material-symbols-outlined text-sm">{col.icon}</span>

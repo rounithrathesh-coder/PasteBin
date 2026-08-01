@@ -69,7 +69,7 @@ export const ItemsInTrashWidget: React.FC = () => {
 };
 
 export const TrashActivityWidget: React.FC = () => {
-  const { trashedPastes } = usePastes();
+  const { trashedPastes, setActiveView } = usePastes();
   const recentDeleted = trashedPastes.slice(0, 4);
 
   return (
@@ -78,7 +78,7 @@ export const TrashActivityWidget: React.FC = () => {
         <h3 className="text-xs font-bold text-on-surface uppercase tracking-wider flex items-center gap-2">
           Trash Activity
         </h3>
-        <button className="text-[11px] font-mono text-purple-400 hover:text-purple-300 hover:underline">
+        <button onClick={() => setActiveView('trash')} className="text-[11px] font-mono text-purple-400 hover:text-purple-300 hover:underline">
           View all
         </button>
       </div>

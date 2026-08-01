@@ -2,11 +2,15 @@ import React from 'react';
 import { usePastes } from '../context/PasteContext';
 
 export const QuickActionsPanel: React.FC = () => {
-  const { setIsEditorModalOpen, setActiveSnippet, showToast } = usePastes();
+  const { setIsImportModalOpen } = usePastes();
 
-  const handleCreateNew = () => {
-    setActiveSnippet(null);
-    setIsEditorModalOpen(true);
+  const handleUploadFile = () => {
+    const picker = document.getElementById('global-shortcut-file-input') as HTMLInputElement;
+    if (picker) picker.click();
+  };
+
+  const handleImportUrl = () => {
+    setIsImportModalOpen(true);
   };
 
   return (
@@ -17,22 +21,7 @@ export const QuickActionsPanel: React.FC = () => {
       </div>
       <div className="p-2 space-y-1">
         <button
-          onClick={handleCreateNew}
-          className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-variant/60 transition-colors group text-left"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-              <span className="material-symbols-outlined text-lg">edit</span>
-            </div>
-            <span className="text-xs font-medium text-on-surface">Create New Paste</span>
-          </div>
-          <span className="text-[10px] font-mono text-outline bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant/60">
-            Ctrl + N
-          </span>
-        </button>
-
-        <button
-          onClick={() => showToast('File upload target ready')}
+          onClick={handleUploadFile}
           className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-variant/60 transition-colors group text-left"
         >
           <div className="flex items-center gap-3">
@@ -47,25 +36,7 @@ export const QuickActionsPanel: React.FC = () => {
         </button>
 
         <button
-          onClick={() => {
-            setActiveSnippet(null);
-            setIsEditorModalOpen(true);
-          }}
-          className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-variant/60 transition-colors group text-left"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
-              <span className="material-symbols-outlined text-lg">auto_awesome_motion</span>
-            </div>
-            <span className="text-xs font-medium text-on-surface">Create From Template</span>
-          </div>
-          <span className="text-[10px] font-mono text-outline bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant/60">
-            Ctrl + T
-          </span>
-        </button>
-
-        <button
-          onClick={() => showToast('Import URL dialog active')}
+          onClick={handleImportUrl}
           className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-variant/60 transition-colors group text-left"
         >
           <div className="flex items-center gap-3">

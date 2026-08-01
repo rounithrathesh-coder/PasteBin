@@ -10,16 +10,14 @@ export const QuickFilterTabs: React.FC = () => {
     All: pastes.length,
     Public: pastes.filter(p => p.visibility === 'Public').length,
     Private: pastes.filter(p => p.visibility === 'Private').length,
-    Unlisted: pastes.filter(p => p.visibility === 'Unlisted').length,
-    Favorites: pastes.filter(p => p.isFavorite).length
+    Unlisted: pastes.filter(p => p.visibility === 'Unlisted').length
   };
 
   const tabs = [
     { key: 'All', label: 'All', count: counts.All, icon: 'apps' },
     { key: 'Public', label: 'Public', count: counts.Public, icon: 'public' },
     { key: 'Private', label: 'Private', count: counts.Private, icon: 'lock' },
-    { key: 'Unlisted', label: 'Unlisted', count: counts.Unlisted, icon: 'link' },
-    { key: 'Favorites', label: 'Favorites', count: counts.Favorites, icon: 'star' }
+    { key: 'Unlisted', label: 'Unlisted', count: counts.Unlisted, icon: 'link' }
   ];
 
   const handleCreateFolder = (e: React.FormEvent) => {

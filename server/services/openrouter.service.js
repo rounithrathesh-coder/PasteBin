@@ -9,8 +9,11 @@ export class OpenRouterService {
    * Helper to call OpenRouter Chat Completions API
    */
   static async queryAI(prompt, systemInstruction = 'You are a senior staff software engineer AI assistant for PasteBin.') {
+    if (isServiceConfigured('ollama')) {
+      return this.queryOllama(prompt, systemInstruction);
+    }
+
     if (!isServiceConfigured('openrouter')) {
-      // Mock AI response fallback when API key is not configured
       return this.getMockResponse(prompt);
     }
 
@@ -42,6 +45,30 @@ export class OpenRouterService {
       return data.choices?.[0]?.message?.content || 'No AI response generated.';
     } catch (err) {
       console.error('[OpenRouter Error]:', err.message);
+      return this.getMockResponse(prompt);
+    }
+  }
+
+  /** Run against a self-hosted Ollama model; no provider API key is required. */
+  static async queryOllama(prompt, systemInstruction) {
+    try {
+      const response = await fetch(`${config.ollamaBaseUrl.replace(/\/$/, '')}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: config.ollamaModel,
+          system: systemInstruction,
+          prompt,
+          stream: false,
+          options: { temperature: 0.2 }
+        })
+      });
+
+      if (!response.ok) throw new Error(`Ollama API error HTTP ${response.status}`);
+      const data = await response.json();
+      return data.response || 'No AI response generated.';
+    } catch (err) {
+      console.error('[Ollama Error]:', err.message);
       return this.getMockResponse(prompt);
     }
   }

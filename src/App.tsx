@@ -22,6 +22,7 @@ import { SystemHealthView } from './components/SystemHealth/SystemHealthView';
 import { PreferencesView } from './components/Preferences/PreferencesView';
 import { AccountView } from './components/Account/AccountView';
 import { AuthModal } from './components/Auth/AuthModal';
+import { ImportUrlModal } from './components/ImportUrlModal';
 
 /* ─── Dashboard ─── */
 const DashboardViewContent: React.FC = () => {
@@ -30,7 +31,7 @@ const DashboardViewContent: React.FC = () => {
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Center Content */}
-      <main className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 space-y-8">
+      <main className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 space-y-8 view-transition">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/40 pb-5">
@@ -121,7 +122,7 @@ const PlaceholderPage: React.FC<{ title: string; subtitle: string; icon: string 
 
 /* ─── Main Layout ─── */
 const MainAppLayout: React.FC = () => {
-  const { activeView, toastMessage, isAuthModalOpen, setIsAuthModalOpen } = usePastes();
+  const { activeView, toastMessage, isAuthModalOpen, setIsAuthModalOpen, isImportModalOpen, setIsImportModalOpen } = usePastes();
 
   const renderView = () => {
     switch (activeView) {
@@ -153,7 +154,7 @@ const MainAppLayout: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-surface overflow-hidden text-on-surface">
+    <div className="app-shell h-screen flex flex-col bg-surface overflow-hidden text-on-surface">
       {/* Top Navbar */}
       <Navbar />
 
@@ -163,7 +164,7 @@ const MainAppLayout: React.FC = () => {
         <Sidebar />
 
         {/* Dynamic View Rendering */}
-        {renderView()}
+        <React.Fragment key={activeView}>{renderView()}</React.Fragment>
       </div>
 
       {/* Footer Status Bar */}
@@ -172,12 +173,15 @@ const MainAppLayout: React.FC = () => {
       {/* Monaco Editor Modal */}
       <MonacoEditorModal />
 
+      {/* Import URL Modal */}
+      <ImportUrlModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
+
       {/* Auth Modal */}
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
       {/* Toast Feedback Banner */}
       {toastMessage && (
-        <div className="fixed bottom-12 right-6 z-50 bg-primary-container text-on-primary-container px-4 py-2.5 rounded-lg shadow-xl border border-primary/30 text-xs font-mono font-semibold flex items-center gap-2 animate-bounce">
+        <div className="fixed bottom-12 right-6 z-50 bg-primary-container text-on-primary-container px-4 py-2.5 rounded-lg shadow-xl border border-primary/30 text-xs font-mono font-semibold flex items-center gap-2 view-transition">
           <span className="material-symbols-outlined text-base">check_circle</span>
           {toastMessage}
         </div>

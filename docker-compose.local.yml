@@ -1,0 +1,58 @@
+services:
+  pastebin:
+    build: .
+    ports:
+      - "5001:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DB_FILE: /app/data/db.json
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:3b
+      R2_ENDPOINT: http://minio:9000
+      R2_ACCESS_KEY_ID: pastebin-local
+      R2_SECRET_ACCESS_KEY: pastebin-local-password
+      R2_BUCKET_NAME: pastebin-attachments
+    volumes:
+      - pastebin-data:/app/data
+    depends_on:
+      - ollama
+      - minio
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-models:/root/.ollama
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    command: ["pull", "llama3.2:3b"]
+    depends_on:
+      - ollama
+    restart: on-failure
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: pastebin-local
+      MINIO_ROOT_PASSWORD: pastebin-local-password
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9001:9001"
+
+  minio-init:
+    image: minio/mc:latest
+    entrypoint: >
+      /bin/sh -c "mc alias set local http://minio:9000 pastebin-local pastebin-local-password && mc mb --ignore-existing local/pastebin-attachments"
+    depends_on:
+      - minio
+    restart: on-failure
+
+volumes:
+  pastebin-data:
+  ollama-models:
+  minio-data:
