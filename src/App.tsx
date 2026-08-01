@@ -120,9 +120,29 @@ const PlaceholderPage: React.FC<{ title: string; subtitle: string; icon: string 
   </div>
 );
 
+import { LandingView } from './components/Landing/LandingView';
+
 /* ─── Main Layout ─── */
 const MainAppLayout: React.FC = () => {
-  const { activeView, toastMessage, isAuthModalOpen, setIsAuthModalOpen, isImportModalOpen, setIsImportModalOpen } = usePastes();
+  const { activeView, toastMessage, isAuthModalOpen, setIsAuthModalOpen, isImportModalOpen, setIsImportModalOpen, isAuthenticated } = usePastes();
+
+  if (!isAuthenticated && (activeView === 'dashboard' || activeView === 'my-snippets' || activeView === 'favorites' || activeView === 'trash' || activeView === 'account' || activeView === 'preferences')) {
+    return (
+      <div className="app-shell h-screen flex flex-col bg-surface overflow-hidden text-on-surface">
+        <LandingView />
+        <MonacoEditorModal />
+        <ImportUrlModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
+        <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+        {toastMessage && (
+          <div className="fixed bottom-12 right-6 z-50 bg-primary-container text-on-primary-container px-4 py-2.5 rounded-lg shadow-xl border border-primary/30 text-xs font-mono font-semibold flex items-center gap-2 view-transition">
+            <span className="material-symbols-outlined text-base">check_circle</span>
+            {toastMessage}
+          </div>
+        )}
+      </div>
+    );
+  }
+
 
   const renderView = () => {
     switch (activeView) {

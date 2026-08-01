@@ -96,9 +96,23 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticatedState] = useState<boolean>(() => {
+    return localStorage.getItem('pastebin_auth') === 'true';
+  });
+
+  const setIsAuthenticated = (auth: boolean) => {
+    setIsAuthenticatedState(auth);
+    if (auth) {
+      localStorage.setItem('pastebin_auth', 'true');
+    } else {
+      localStorage.removeItem('pastebin_auth');
+    }
+  };
+
   const [deleteModalSnippet, setDeleteModalSnippet] = useState<Snippet | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+
 
   /* ─── Bootstrap: Fetch pastes, trash & user from API ─── */
   useEffect(() => {
