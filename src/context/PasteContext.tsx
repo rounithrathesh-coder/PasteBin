@@ -207,13 +207,14 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   /* ─── Share Snippet URL ─── */
   const sharePaste = (snippet: Snippet) => {
-    const url = `${window.location.origin}/?paste=${snippet.id}`;
+    const url = `${window.location.origin}/p/${snippet.id}`;
     try {
       navigator.clipboard.writeText(url);
     } catch (e) {}
-    window.history.pushState({}, '', `/?paste=${snippet.id}`);
-    showToast(`Copied share URL: ${url}`);
+    window.open(url, '_blank', 'noopener,noreferrer');
+    showToast(`Share link copied & opened in new tab!`);
   };
+
 
   /* ─── User Profile Update ─── */
   const updateUser = async (updates: Partial<UserProfile>) => {

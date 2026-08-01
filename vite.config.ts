@@ -6,6 +6,7 @@ export default defineConfig(() => {
 
   return {
     plugins: [react()],
+    appType: 'spa',
     server: {
       port: 3000,
       host: true,
@@ -19,3 +20,4 @@ export default defineConfig(() => {
     }
   };
 });
+

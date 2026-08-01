@@ -1,25 +1,6 @@
 {
   "pastes": [
     {
-      "id": "pst-1785562434431",
-      "title": "Monaco Test Paste",
-      "description": "Snippet created in JavaScript",
-      "code": "// Enter your code here...\nfunction helloWorld() {\n  console.log(\"Hello from PasteBin!\");\n}\n\nhelloWorld();",
-      "language": "JavaScript",
-      "visibility": "Public",
-      "views": 1,
-      "lines": 6,
-      "fileSize": "0.1 KB",
-      "author": "dev",
-      "createdAt": "Just now",
-      "lastOpened": "Just now",
-      "folder": "Utils",
-      "tags": [
-        "javascript"
-      ],
-      "isFavorite": false
-    },
-    {
       "id": "pst-01",
       "title": "Quick sort in Python",
       "description": "Implementation of quick sort algorithm with comments",
@@ -127,6 +108,27 @@
     }
   ],
   "trash": [
+    {
+      "id": "pst-1785562434431",
+      "title": "Monaco Test Paste",
+      "description": "Snippet created in JavaScript",
+      "code": "// Enter your code here...\nfunction helloWorld() {\n  console.log(\"Hello from PasteBin!\");\n}\n\nhelloWorld();",
+      "language": "JavaScript",
+      "visibility": "Public",
+      "views": 1,
+      "lines": 6,
+      "fileSize": "0.1 KB",
+      "author": "dev",
+      "createdAt": "Just now",
+      "lastOpened": "Just now",
+      "folder": "Utils",
+      "tags": [
+        "javascript"
+      ],
+      "isFavorite": false,
+      "isTrashed": true,
+      "deletedAt": "Just now"
+    },
     {
       "id": "tr-01",
       "title": "Quick sort in Python (Legacy)",

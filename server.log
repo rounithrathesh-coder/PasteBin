@@ -1,0 +1,3 @@
+◇ injected env (13) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+🚀 PasteBin Enterprise Backend running on http://localhost:5001
+⚡ Health check & Integrations status: http://localhost:5001/api/health
