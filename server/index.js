@@ -14,7 +14,8 @@ import { openApiDocument } from './openapi.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DB_FILE = process.env.DB_FILE || path.join(__dirname, 'db.json');
+const INITIAL_DB_FILE = path.join(__dirname, 'db.json');
+const DB_FILE = process.env.DB_FILE || (process.env.VERCEL ? '/tmp/db.json' : INITIAL_DB_FILE);
 
 const app = express();
 const PORT = config.port;
@@ -34,6 +35,13 @@ app.use((err, req, res, next) => {
 // Helper DB Read/Write
 const readDB = () => {
   try {
+    if (process.env.VERCEL && !fs.existsSync(DB_FILE) && fs.existsSync(INITIAL_DB_FILE)) {
+      try {
+        fs.copyFileSync(INITIAL_DB_FILE, DB_FILE);
+      } catch (e) {
+        console.error('Failed to copy initial DB to /tmp:', e);
+      }
+    }
     const data = fs.readFileSync(DB_FILE, 'utf8');
     return JSON.parse(data);
   } catch (err) {
@@ -42,9 +50,14 @@ const readDB = () => {
 };
 
 const writeDB = (db) => {
-  fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
-  fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf8');
+  try {
+    fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
+    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to write DB:', err);
+  }
 };
+
 
 /* ─── Default User Profile ─── */
 const DEFAULT_USER = {
@@ -460,8 +473,13 @@ if (fs.existsSync(DIST_DIR)) {
   app.get('/{*splat}', (req, res) => res.sendFile(path.join(DIST_DIR, 'index.html')));
 }
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 PasteBin Enterprise Backend running on http://localhost:${PORT}`);
-  console.log(`⚡ Health check & Integrations status: http://localhost:${PORT}/api/health`);
-});
+// Start Server (if not running in Vercel Serverless environment)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 PasteBin Enterprise Backend running on http://localhost:${PORT}`);
+    console.log(`⚡ Health check & Integrations status: http://localhost:${PORT}/api/health`);
+  });
+}
+
+export default app;
+
