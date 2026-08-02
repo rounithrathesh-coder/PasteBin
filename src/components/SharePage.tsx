@@ -56,7 +56,25 @@ export function SharePage({ snippetId }: { snippetId: string }) {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      // Try API single paste
+
+      // 1. Check for self-contained encoded data in URL parameter
+      const params = new URLSearchParams(window.location.search);
+      const dataParam = params.get('data');
+      if (dataParam) {
+        try {
+          const decodedJson = decodeURIComponent(atob(dataParam));
+          const decodedSnippet: Snippet = JSON.parse(decodedJson);
+          if (decodedSnippet && decodedSnippet.code) {
+            setSnippet(decodedSnippet);
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.warn('[SharePage] Failed to decode URL data parameter:', e);
+        }
+      }
+
+      // 2. Try API single paste
       try {
         const res = await fetch(`/api/pastes/${snippetId}`);
         if (res.ok) {
@@ -67,7 +85,7 @@ export function SharePage({ snippetId }: { snippetId: string }) {
         }
       } catch { /* fallback */ }
 
-      // Try full list from API
+      // 3. Try full list from API
       try {
         const res = await fetch('/api/pastes');
         if (res.ok) {
@@ -77,11 +95,22 @@ export function SharePage({ snippetId }: { snippetId: string }) {
         }
       } catch { /* fallback */ }
 
+      // 4. Try local storage (for same browser)
+      try {
+        const stored = localStorage.getItem('pastebin_pastes');
+        if (stored) {
+          const pastes: Snippet[] = JSON.parse(stored);
+          const found = pastes.find((p) => p.id === snippetId);
+          if (found) { setSnippet(found); setLoading(false); return; }
+        }
+      } catch { /* fallback */ }
+
       setNotFound(true);
       setLoading(false);
     };
     load();
   }, [snippetId]);
+
 
   const handleCopyCode = async () => {
     if (!snippet) return;

@@ -221,13 +221,22 @@ export const PasteProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   /* ─── Share Snippet URL ─── */
   const sharePaste = (snippet: Snippet) => {
-    const url = `${window.location.origin}/p/${snippet.id}`;
     try {
-      navigator.clipboard.writeText(url);
-    } catch (e) {}
-    window.open(url, '_blank', 'noopener,noreferrer');
-    showToast(`Share link copied & opened in new tab!`);
+      const payload = btoa(encodeURIComponent(JSON.stringify(snippet)));
+      const url = `${window.location.origin}/p/${snippet.id}?data=${payload}`;
+      try {
+        navigator.clipboard.writeText(url);
+      } catch (e) {}
+      window.open(url, '_blank', 'noopener,noreferrer');
+      showToast(`Share link copied & opened in new tab!`);
+    } catch (err) {
+      const fallbackUrl = `${window.location.origin}/p/${snippet.id}`;
+      try { navigator.clipboard.writeText(fallbackUrl); } catch (e) {}
+      window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+      showToast(`Share link copied & opened in new tab!`);
+    }
   };
+
 
 
   /* ─── User Profile Update ─── */
