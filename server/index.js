@@ -467,11 +467,14 @@ app.delete('/api/trash', (req, res) => {
   res.json({ message: `Emptied ${count} items from trash` });
 });
 
-const DIST_DIR = path.join(__dirname, '../dist');
-if (fs.existsSync(DIST_DIR)) {
-  app.use(express.static(DIST_DIR));
-  app.get('/{*splat}', (req, res) => res.sendFile(path.join(DIST_DIR, 'index.html')));
+if (!process.env.VERCEL) {
+  const DIST_DIR = path.join(__dirname, '../dist');
+  if (fs.existsSync(DIST_DIR)) {
+    app.use(express.static(DIST_DIR));
+    app.get('*', (req, res) => res.sendFile(path.join(DIST_DIR, 'index.html')));
+  }
 }
+
 
 // Start Server (if not running in Vercel Serverless environment)
 if (!process.env.VERCEL) {

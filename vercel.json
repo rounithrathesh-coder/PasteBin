@@ -8,11 +8,7 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/p/(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/((?!api/|_vite/|assets/|favicon.ico|.*\\..*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
